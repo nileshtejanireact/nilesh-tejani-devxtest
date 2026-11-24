@@ -1,0 +1,28 @@
+{% comment %}
+  Loomhaus Quick View Popup (Desktop Modal / Mobile Bottom Sheet)
+  devx labs Assignment
+{% endcomment %}
+
+<div class="lh-quickview-backdrop" id="LoomhausQuickViewBackdrop" role="dialog" aria-modal="true" aria-labelledby="LhQvTitle">
+  <div class="lh-quickview-modal">
+    <button type="button" class="lh-quickview-close" id="LhQvClose" aria-label="Close Quick View">&times;</button>
+    <div class="lh-quickview-body">
+      <div class="lh-qv-image-wrap">
+        <img id="LhQvImage" src="" alt="Product Quick View" loading="lazy">
+      </div>
+      <div class="lh-qv-info">
+        <h3 class="lh-qv-title" id="LhQvTitle">Product Title</h3>
+        <div class="lh-qv-price" id="LhQvPrice">₹0.00</div>
+        <p class="lh-qv-desc" id="LhQvDesc">Crafted with premium materials for timeless wear and unmatched comfort.</p>
+        
+        <div class="lh-option-header">SELECT VARIANT</div>
+        <select id="LhQvSelect" class="lh-qv-select" aria-label="Select variant"></select>
+
+        <button type="button" id="LhQvAddToCart" class="lh-btn-add-to-cart" style="width: 100%;">
+          <span>ADD TO CART</span>
+          <span>&rarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
