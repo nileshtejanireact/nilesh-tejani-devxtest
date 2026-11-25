@@ -251,7 +251,6 @@ window.Loomhaus = (function() {
 
   /* ==========================================================================
      Quick View Popup (Desktop Modal / Mobile Bottom Sheet)
-     100% Matching Image 2 and Figma Specs
      ========================================================================== */
   async function openQuickView(handle) {
     if (!dom.quickViewBackdrop) return;
@@ -302,7 +301,6 @@ window.Loomhaus = (function() {
       qvDesc.textContent = temp.textContent || temp.innerText || '';
     }
 
-    // Extract Colors and Sizes from variants
     const colors = [];
     const sizes = [];
 
@@ -324,7 +322,6 @@ window.Loomhaus = (function() {
     qvSelectedColor = colors[0];
     qvSelectedSize = '';
 
-    // Render Color Swatches [ ● Black ] [ ○ White ]
     if (qvColorSwatches) {
       qvColorSwatches.innerHTML = colors.map((col, idx) => {
         const { hex, isWhite } = getColorHex(col);
@@ -347,7 +344,6 @@ window.Loomhaus = (function() {
       });
     }
 
-    // Render Size Dropdown
     if (qvSelect) {
       qvSelect.innerHTML = `
         <option value="" disabled selected>Choose your size</option>
@@ -395,7 +391,6 @@ window.Loomhaus = (function() {
   }
 
   function setupQuickViewEvents() {
-    // Hotspot clicks
     document.querySelectorAll('[data-hotspot-product]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -405,7 +400,6 @@ window.Loomhaus = (function() {
       });
     });
 
-    // Close button & backdrop click
     const closeBtn = document.getElementById('LhQvClose');
     if (closeBtn) closeBtn.addEventListener('click', closeQuickView);
     if (dom.quickViewBackdrop) {
@@ -444,10 +438,8 @@ window.Loomhaus = (function() {
     const offer1Price = document.getElementById('LhOffer1Price');
     const offer2Price = document.getElementById('LhOffer2Price');
     const colorLabel = document.getElementById('LhSelectedColorLabel');
-    const dotsWrap = document.getElementById('LhGalleryDots');
 
     function updateVariant() {
-      // Find matching variant
       const variant = productData.variants.find(v => {
         const title = v.title.toLowerCase();
         return title.includes(selectedColor.toLowerCase()) && title.includes(selectedSize.toLowerCase());
@@ -455,7 +447,6 @@ window.Loomhaus = (function() {
 
       if (variantIdInput) variantIdInput.value = variant.id;
 
-      // Update price display
       if (priceCurrent) priceCurrent.textContent = formatMoney(variant.price);
       if (priceCompare) {
         if (variant.compare_at_price && variant.compare_at_price > variant.price) {
@@ -472,7 +463,6 @@ window.Loomhaus = (function() {
         }
       }
 
-      // Update Dynamic Offers: 10% off and 15% off
       if (offer1Price) {
         const discounted = variant.price * 0.9;
         offer1Price.textContent = `Get it for ${formatMoney(discounted)}`;
@@ -484,6 +474,7 @@ window.Loomhaus = (function() {
 
       // Update image if variant has featured image
       if (variant.featured_image && variant.featured_image.src && mainImg) {
+        mainImg.removeAttribute('srcset');
         mainImg.src = variant.featured_image.src;
       }
     }
@@ -533,39 +524,6 @@ window.Loomhaus = (function() {
       };
     }
 
-    // Gallery Thumbnails & Mobile Dots
-    const thumbs = Array.from(section.querySelectorAll('.lh-thumb-btn'));
-    function setActiveGalleryIndex(idx) {
-      thumbs.forEach((t, i) => t.classList.toggle('is-active', i === idx));
-      if (thumbs[idx] && mainImg) {
-        mainImg.src = thumbs[idx].dataset.src;
-      }
-      if (dotsWrap) {
-        const dots = dotsWrap.querySelectorAll('.lh-dot');
-        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
-      }
-    }
-
-    thumbs.forEach((btn, idx) => {
-      btn.addEventListener('click', () => setActiveGalleryIndex(idx));
-    });
-
-    // Gallery Arrows
-    const prevArrow = document.getElementById('LhGalleryPrev');
-    const nextArrow = document.getElementById('LhGalleryNext');
-    if (prevArrow && nextArrow && thumbs.length > 0) {
-      prevArrow.onclick = () => {
-        const activeIdx = thumbs.findIndex(t => t.classList.contains('is-active'));
-        const nextIdx = (activeIdx - 1 + thumbs.length) % thumbs.length;
-        setActiveGalleryIndex(nextIdx);
-      };
-      nextArrow.onclick = () => {
-        const activeIdx = thumbs.findIndex(t => t.classList.contains('is-active'));
-        const nextIdx = (activeIdx + 1) % thumbs.length;
-        setActiveGalleryIndex(nextIdx);
-      };
-    }
-
     // Initial variant calculation
     updateVariant();
   }
@@ -599,7 +557,11 @@ window.Loomhaus = (function() {
   };
 })();
 
-// DOM Ready
-document.addEventListener('DOMContentLoaded', function() {
+// DOM Ready Handler (Handles both deferred scripts and already loaded DOM)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    window.Loomhaus.init();
+  });
+} else {
   window.Loomhaus.init();
-});
+}
