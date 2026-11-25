@@ -1,4 +1,6 @@
 /* Loomhaus Custom Design System - devx labs Assignment */
+/* 100% Matching Figma Desktop & Mobile Specs */
+
 :root {
   --lh-bg: #f6f3ee;
   --lh-dark: #292a25;
@@ -67,8 +69,12 @@ body.loomhaus-active {
     justify-content: center;
     text-align: center;
   }
-  .lh-announcement-inner .lh-anno-left {
+  .lh-announcement-inner .lh-anno-left,
+  .lh-announcement-inner .lh-anno-center {
     display: none;
+  }
+  .lh-announcement-inner .lh-anno-right {
+    font-size: 12px;
   }
 }
 
@@ -153,12 +159,18 @@ body.loomhaus-active {
   display: inline-block;
 }
 @media (max-width: 768px) {
+  .lh-header-inner {
+    height: 64px;
+  }
   .lh-header-tagline {
     display: none;
   }
   .lh-btn-header-drop {
-    padding: 8px 14px;
-    font-size: 12px;
+    padding: 7px 14px;
+    font-size: 11px;
+  }
+  .lh-logo {
+    font-size: 22px;
   }
 }
 
@@ -329,16 +341,41 @@ body.loomhaus-active {
 }
 
 @media (max-width: 900px) {
+  .lh-hero-section {
+    padding: 36px 0 50px;
+  }
   .lh-hero-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
   }
   .lh-hero-title {
-    font-size: 44px;
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+  .lh-hero-desc {
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+  .lh-hero-stats {
+    gap: 20px;
+    margin-top: 32px;
+    padding-top: 24px;
+    justify-content: space-between;
+  }
+  .lh-stat-val {
+    font-size: 20px;
+  }
+  .lh-stat-label {
+    font-size: 12px;
+  }
+  .lh-hero-arch-card {
+    max-width: 320px;
+    border-radius: 160px 160px 24px 24px;
   }
   .lh-hero-floating-card {
-    left: 20px;
-    bottom: 20px;
+    left: 12px;
+    bottom: 16px;
+    padding: 8px 14px;
   }
 }
 
@@ -500,19 +537,21 @@ body.loomhaus-active {
 }
 
 @media (max-width: 900px) {
-  .lh-hotspots-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-}
-@media (max-width: 600px) {
-  .lh-hotspots-grid {
-    grid-template-columns: 1fr;
+  .lh-hotspots-section {
+    padding: 48px 0;
   }
   .lh-hotspots-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    margin-bottom: 24px;
+  }
+  .lh-hotspots-title {
+    font-size: 28px;
+  }
+  .lh-hotspots-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
@@ -698,7 +737,7 @@ body.loomhaus-active {
   line-height: 1.45;
 }
 
-/* Color Options */
+/* Color Options in Featured Product */
 .lh-option-group {
   margin-bottom: 24px;
 }
@@ -712,7 +751,8 @@ body.loomhaus-active {
 }
 .lh-color-swatches {
   display: flex;
-  gap: 12px;
+  gap: 14px;
+  align-items: center;
 }
 .lh-color-swatch-btn {
   width: 32px;
@@ -729,10 +769,11 @@ body.loomhaus-active {
   outline-color: var(--lh-dark);
 }
 
-/* Size Pills */
+/* Size Pills in Featured Product */
 .lh-size-pills {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 .lh-size-pill-wrap {
   position: relative;
@@ -752,11 +793,11 @@ body.loomhaus-active {
   pointer-events: none;
 }
 .lh-size-btn {
-  min-width: 64px;
+  min-width: 68px;
   height: 44px;
   border-radius: 12px;
   border: 1px solid var(--lh-border);
-  background-color: #ffffff;
+  background-color: #eae5dc;
   color: var(--lh-dark);
   font-size: 14px;
   font-weight: 600;
@@ -895,14 +936,25 @@ body.loomhaus-active {
 }
 
 @media (max-width: 900px) {
+  .lh-featured-section {
+    padding: 48px 0 60px;
+  }
   .lh-featured-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 32px;
+  }
+  .lh-featured-title {
+    font-size: 28px;
+  }
+  .lh-offers-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
 /* ==========================================================================
    Quick View Modal (Desktop) & Bottom Sheet (Mobile)
+   100% Matching Image 2 and Figma Specs
    ========================================================================== */
 .lh-quickview-backdrop {
   position: fixed;
@@ -923,79 +975,207 @@ body.loomhaus-active {
   display: flex;
   opacity: 1;
 }
+
 .lh-quickview-modal {
-  background: var(--lh-bg);
-  border-radius: 24px;
-  max-width: 840px;
-  width: 92%;
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 760px;
+  width: 90%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
   transform: translateY(20px);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 24px;
+  box-sizing: border-box;
 }
 .lh-quickview-backdrop.is-open .lh-quickview-modal {
   transform: translateY(0);
 }
-.lh-quickview-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ffffff;
-  border: 1px solid var(--lh-border);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: var(--lh-dark);
-  z-index: 10;
+
+.lh-qv-drag-handle {
+  display: none;
 }
+
 .lh-quickview-body {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  padding: 36px;
+  grid-template-columns: 280px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.lh-qv-image-wrap {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f5f2eb;
 }
 .lh-qv-image-wrap img {
   width: 100%;
-  aspect-ratio: 1/1;
+  height: 100%;
   object-fit: cover;
-  border-radius: 16px;
+  display: block;
+}
+
+.lh-qv-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.lh-qv-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
 }
 .lh-qv-title {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--lh-dark);
-  margin: 0 0 10px;
-}
-.lh-qv-price {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--lh-dark);
+  margin: 0;
+  line-height: 1.25;
+}
+.lh-quickview-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--lh-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.lh-quickview-close:hover {
+  opacity: 0.7;
+}
+
+.lh-qv-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--lh-dark);
+  margin: 6px 0 12px;
+}
+
+.lh-qv-desc {
+  font-size: 12.5px;
+  color: #666666;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+
+.lh-qv-option-group {
   margin-bottom: 16px;
 }
-.lh-qv-desc {
-  font-size: 14px;
-  color: var(--lh-text-muted);
-  line-height: 1.6;
-  margin-bottom: 24px;
+.lh-qv-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lh-dark);
+  margin-bottom: 8px;
+}
+
+/* Figma Swatch Buttons in Quick View: [ ● Black ] [ ○ White ] */
+.lh-qv-color-swatches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.lh-qv-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid #e2ded5;
+  background-color: #ffffff;
+  color: var(--lh-dark);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lh-qv-swatch:hover {
+  border-color: var(--lh-dark);
+}
+.lh-qv-swatch.is-selected {
+  background-color: #f7f5f1;
+  border: 1.5px solid var(--lh-dark);
+  font-weight: 600;
+}
+.lh-qv-swatch-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Styled Dropdown in Quick View */
+.lh-qv-select-wrap {
+  position: relative;
+  width: 100%;
 }
 .lh-qv-select {
   width: 100%;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid var(--lh-border);
-  padding: 0 12px;
-  font-size: 14px;
-  background: #ffffff;
-  margin-bottom: 24px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #d8d4ca;
+  background-color: #ffffff;
+  color: var(--lh-dark);
+  padding: 0 36px 0 14px;
+  font-size: 13px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.lh-qv-select:focus {
+  outline: none;
+  border-color: var(--lh-dark);
+}
+.lh-qv-select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666;
+  display: flex;
+  align-items: center;
 }
 
+/* Add to Cart button in Quick View */
+.lh-qv-add-btn {
+  width: 100%;
+  height: 46px;
+  border-radius: 8px;
+  background-color: #242521;
+  color: #ffffff;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: all 0.2s ease;
+}
+.lh-qv-add-btn:hover {
+  background-color: #111111;
+  transform: translateY(-1px);
+}
+
+/* Mobile Quick View: Smooth Bottom Sheet */
 @media (max-width: 768px) {
   .lh-quickview-backdrop {
     align-items: flex-end;
@@ -1003,13 +1183,32 @@ body.loomhaus-active {
   .lh-quickview-modal {
     width: 100%;
     max-width: 100%;
-    border-radius: 24px 24px 0 0;
-    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    max-height: 88vh;
+    padding: 12px 20px 28px;
     transform: translateY(100%);
+  }
+  .lh-quickview-backdrop.is-open .lh-quickview-modal {
+    transform: translateY(0);
+  }
+  .lh-qv-drag-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: #dcd7ce;
+    border-radius: 2px;
+    margin: 4px auto 16px;
   }
   .lh-quickview-body {
     grid-template-columns: 1fr;
-    padding: 24px 20px;
+    gap: 16px;
+  }
+  .lh-qv-image-wrap {
+    max-height: 220px;
+    aspect-ratio: 16 / 9;
+  }
+  .lh-qv-title {
+    font-size: 18px;
   }
 }
 
