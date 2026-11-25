@@ -1,6 +1,6 @@
 {% comment %}
   Loomhaus Featured Product Section
-  devx labs Assignment
+  devx labs Assignment - 100% Matching Figma Desktop & Mobile
 {% endcomment %}
 
 {%- assign p = all_products[section.settings.product] | default: all_products['classic-varsity-top'] -%}
@@ -25,7 +25,15 @@
           <button type="button" class="lh-gallery-arrow lh-gallery-next" id="LhGalleryNext" aria-label="Next image">&rarr;</button>
         </div>
 
-        <!-- Thumbnails -->
+        <!-- Mobile Carousel Dots Indicator -->
+        <div class="lh-gallery-dots" id="LhGalleryDots">
+          <span class="lh-dot is-active"></span>
+          <span class="lh-dot"></span>
+          <span class="lh-dot"></span>
+          <span class="lh-dot"></span>
+        </div>
+
+        <!-- Desktop Thumbnails -->
         <div class="lh-gallery-thumbs">
           {%- if p.images.size > 0 -%}
             {%- for img in p.images -%}
@@ -47,7 +55,7 @@
           <span class="lh-featured-badge">{{ section.settings.badge | default: 'Loomhaus #1 Everyday Top' }}</span>
           <div class="lh-featured-rating">
             <span class="lh-star">★</span>
-            <span>4.8 (850+ Reviews)</span>
+            <span>4.8 (1200+ Reviews)</span>
           </div>
         </div>
 
@@ -69,7 +77,12 @@
 
         <!-- Highlight Box -->
         <div class="lh-highlight-box">
-          <div class="lh-highlight-check">✓</div>
+          <div class="lh-highlight-check">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
           <div>
             <div class="lh-highlight-heading">{{ section.settings.highlight_title | default: 'Keeps its shape after 100+ washes' }}</div>
             <div class="lh-highlight-text">{{ section.settings.highlight_text | default: 'Heavyweight 320 GSM combed cotton. Built to last through daily wear.' }}</div>
@@ -81,8 +94,7 @@
           <div class="lh-option-header">COLOR: <span id="LhSelectedColorLabel">BLACK</span></div>
           <div class="lh-color-swatches">
             <button type="button" class="lh-color-swatch-btn is-selected" data-color="Black" style="background-color: #111111;" title="Black"></button>
-            <button type="button" class="lh-color-swatch-btn" data-color="White" style="background-color: #ffffff; border: 1px solid #ddd;" title="White"></button>
-            <button type="button" class="lh-color-swatch-btn" data-color="Cream" style="background-color: #dcd6c8;" title="Cream"></button>
+            <button type="button" class="lh-color-swatch-btn" data-color="White" style="background-color: #ffffff; border: 1px solid #dcd7ce;" title="White"></button>
           </div>
         </div>
 
@@ -94,7 +106,7 @@
               <button type="button" class="lh-size-btn" data-size="XS">XS</button>
             </div>
             <div class="lh-size-pill-wrap">
-              <span class="lh-size-badge">Few items</span>
+              <span class="lh-size-badge">Waitlisted</span>
               <button type="button" class="lh-size-btn" data-size="S">S</button>
             </div>
             <div class="lh-size-pill-wrap">
@@ -129,8 +141,16 @@
         <!-- Dynamic Offer Cards -->
         <div class="lh-offers-grid">
           <div class="lh-offer-card">
-            <div class="lh-offer-price" id="LhOffer1Price">Get it for {{ var_price | times: 0.9 | money }}</div>
-            <div class="lh-offer-sub">Use code <strong>LOOM10</strong> for 10% off your first order</div>
+            <div class="lh-offer-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <div class="lh-offer-body">
+              <div class="lh-offer-price" id="LhOffer1Price">Get it for {{ var_price | times: 0.9 | money }}</div>
+              <div class="lh-offer-sub">Use code <strong>LOOM10</strong> for 10% off</div>
+            </div>
             <button type="button" class="lh-offer-copy-btn" data-copy-code="LOOM10" aria-label="Copy LOOM10">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -140,8 +160,16 @@
           </div>
 
           <div class="lh-offer-card">
-            <div class="lh-offer-price" id="LhOffer2Price">Get it for {{ var_price | times: 0.85 | money }}</div>
-            <div class="lh-offer-sub">Use code <strong>LOOM15</strong> on orders above ₹1,000</div>
+            <div class="lh-offer-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <div class="lh-offer-body">
+              <div class="lh-offer-price" id="LhOffer2Price">Get it for {{ var_price | times: 0.85 | money }}</div>
+              <div class="lh-offer-sub">Buy 2, save 15% (LOOM15)</div>
+            </div>
             <button type="button" class="lh-offer-copy-btn" data-copy-code="LOOM15" aria-label="Copy LOOM15">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>

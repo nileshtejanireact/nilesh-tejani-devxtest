@@ -1,5 +1,5 @@
 /* Loomhaus Custom Design System - devx labs Assignment */
-/* 100% Matching Figma Desktop & Mobile Specs */
+/* 100% Pixel-Perfect Desktop & Mobile Implementations */
 
 :root {
   --lh-bg: #f6f3ee;
@@ -32,12 +32,6 @@ body.loomhaus-active {
   box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-  .lh-container {
-    padding: 0 16px;
-  }
-}
-
 /* ==========================================================================
    Announcement Bar
    ========================================================================== */
@@ -63,19 +57,6 @@ body.loomhaus-active {
 .lh-announcement-inner .lh-star-icon {
   color: #ffffff;
   font-size: 11px;
-}
-@media (max-width: 768px) {
-  .lh-announcement-inner {
-    justify-content: center;
-    text-align: center;
-  }
-  .lh-announcement-inner .lh-anno-left,
-  .lh-announcement-inner .lh-anno-center {
-    display: none;
-  }
-  .lh-announcement-inner .lh-anno-right {
-    font-size: 12px;
-  }
 }
 
 /* ==========================================================================
@@ -157,21 +138,6 @@ body.loomhaus-active {
   border-radius: 50%;
   text-align: center;
   display: inline-block;
-}
-@media (max-width: 768px) {
-  .lh-header-inner {
-    height: 64px;
-  }
-  .lh-header-tagline {
-    display: none;
-  }
-  .lh-btn-header-drop {
-    padding: 7px 14px;
-    font-size: 11px;
-  }
-  .lh-logo {
-    font-size: 22px;
-  }
 }
 
 /* ==========================================================================
@@ -340,45 +306,6 @@ body.loomhaus-active {
   color: var(--lh-text-muted);
 }
 
-@media (max-width: 900px) {
-  .lh-hero-section {
-    padding: 36px 0 50px;
-  }
-  .lh-hero-grid {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-  .lh-hero-title {
-    font-size: 40px;
-    margin-bottom: 16px;
-  }
-  .lh-hero-desc {
-    font-size: 15px;
-    margin-bottom: 28px;
-  }
-  .lh-hero-stats {
-    gap: 20px;
-    margin-top: 32px;
-    padding-top: 24px;
-    justify-content: space-between;
-  }
-  .lh-stat-val {
-    font-size: 20px;
-  }
-  .lh-stat-label {
-    font-size: 12px;
-  }
-  .lh-hero-arch-card {
-    max-width: 320px;
-    border-radius: 160px 160px 24px 24px;
-  }
-  .lh-hero-floating-card {
-    left: 12px;
-    bottom: 16px;
-    padding: 8px 14px;
-  }
-}
-
 /* ==========================================================================
    Marquee Strip
    ========================================================================== */
@@ -535,24 +462,11 @@ body.loomhaus-active {
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
-
-@media (max-width: 900px) {
-  .lh-hotspots-section {
-    padding: 48px 0;
-  }
-  .lh-hotspots-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-  .lh-hotspots-title {
-    font-size: 28px;
-  }
-  .lh-hotspots-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+.lh-tile-label-title {
+  font-weight: 600;
+}
+.lh-tile-label-price {
+  font-weight: 500;
 }
 
 /* ==========================================================================
@@ -613,6 +527,10 @@ body.loomhaus-active {
 }
 .lh-gallery-prev { left: 16px; }
 .lh-gallery-next { right: 16px; }
+
+.lh-gallery-dots {
+  display: none;
+}
 
 .lh-gallery-thumbs {
   display: flex;
@@ -723,6 +641,7 @@ body.loomhaus-active {
   font-size: 18px;
   flex-shrink: 0;
   margin-top: 1px;
+  display: flex;
 }
 .lh-highlight-heading {
   font-size: 14px;
@@ -906,50 +825,43 @@ body.loomhaus-active {
   border-radius: 12px;
   background: #fbf9f6;
   padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   position: relative;
+}
+.lh-offer-icon {
+  color: var(--lh-dark);
+  flex-shrink: 0;
+  display: flex;
+}
+.lh-offer-body {
+  flex: 1;
 }
 .lh-offer-price {
   font-size: 14px;
   font-weight: 800;
   color: var(--lh-dark);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .lh-offer-sub {
   font-size: 12px;
   color: var(--lh-text-muted);
   line-height: 1.35;
-  padding-right: 28px;
 }
 .lh-offer-copy-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--lh-text-muted);
   padding: 4px;
   transition: color 0.2s ease;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 .lh-offer-copy-btn:hover {
   color: var(--lh-dark);
-}
-
-@media (max-width: 900px) {
-  .lh-featured-section {
-    padding: 48px 0 60px;
-  }
-  .lh-featured-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .lh-featured-title {
-    font-size: 28px;
-  }
-  .lh-offers-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
 }
 
 /* ==========================================================================
@@ -1175,43 +1087,6 @@ body.loomhaus-active {
   transform: translateY(-1px);
 }
 
-/* Mobile Quick View: Smooth Bottom Sheet */
-@media (max-width: 768px) {
-  .lh-quickview-backdrop {
-    align-items: flex-end;
-  }
-  .lh-quickview-modal {
-    width: 100%;
-    max-width: 100%;
-    border-radius: 20px 20px 0 0;
-    max-height: 88vh;
-    padding: 12px 20px 28px;
-    transform: translateY(100%);
-  }
-  .lh-quickview-backdrop.is-open .lh-quickview-modal {
-    transform: translateY(0);
-  }
-  .lh-qv-drag-handle {
-    display: block;
-    width: 36px;
-    height: 4px;
-    background: #dcd7ce;
-    border-radius: 2px;
-    margin: 4px auto 16px;
-  }
-  .lh-quickview-body {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .lh-qv-image-wrap {
-    max-height: 220px;
-    aspect-ratio: 16 / 9;
-  }
-  .lh-qv-title {
-    font-size: 18px;
-  }
-}
-
 /* ==========================================================================
    Cart Drawer (Desktop Slideout & Mobile Full Screen)
    ========================================================================== */
@@ -1392,12 +1267,6 @@ body.loomhaus-active {
   opacity: 0.92;
 }
 
-@media (max-width: 768px) {
-  .lh-cart-drawer {
-    width: 100vw;
-  }
-}
-
 /* ==========================================================================
    Footer
    ========================================================================== */
@@ -1412,6 +1281,9 @@ body.loomhaus-active {
   grid-template-columns: 2fr 1fr 1fr;
   gap: 60px;
   margin-bottom: 60px;
+}
+.lh-footer-menus-wrap {
+  display: contents;
 }
 .lh-footer-logo {
   font-size: 26px;
@@ -1458,9 +1330,312 @@ body.loomhaus-active {
   display: flex;
   justify-content: space-between;
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS (100% Matching Reference Screenshot)
+   ========================================================================== */
 @media (max-width: 768px) {
-  .lh-footer-grid {
+  .lh-container {
+    padding: 0 16px;
+  }
+
+  /* Announcement Bar */
+  .lh-announcement-bar {
+    padding: 8px 0;
+  }
+  .lh-announcement-inner {
+    justify-content: center;
+    text-align: center;
+  }
+  .lh-announcement-inner .lh-anno-left {
+    display: none;
+  }
+  .lh-announcement-inner .lh-anno-right {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* Header */
+  .lh-header-inner {
+    height: 56px;
+  }
+  .lh-header-tagline,
+  .lh-btn-header-drop {
+    display: none !important;
+  }
+  .lh-logo {
+    font-size: 22px;
+  }
+
+  /* Hero Section */
+  .lh-hero-section {
+    padding: 24px 0 36px;
+  }
+  .lh-hero-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+  .lh-hero-badge {
+    margin-bottom: 12px;
+    font-size: 10px;
+    padding: 5px 12px;
+  }
+  .lh-hero-title {
+    font-size: 38px;
+    line-height: 1.08;
+    margin-bottom: 12px;
+  }
+  .lh-hero-desc {
+    font-size: 14.5px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .lh-btn-primary {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 48px;
+    font-size: 13px;
+    padding: 0;
+  }
+  .lh-hero-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 18px;
+  }
+  .lh-stat-val {
+    font-size: 18px;
+  }
+  .lh-stat-label {
+    font-size: 11px;
+  }
+  .lh-hero-arch-card {
+    max-width: 290px;
+    margin: 20px auto 0;
+    border-radius: 145px 145px 20px 20px;
+  }
+  .lh-hero-floating-card,
+  .lh-hero-backdrop-circle {
+    display: none !important;
+  }
+
+  /* Marquee */
+  .lh-marquee-strip {
+    padding: 12px 0;
+  }
+  .lh-marquee-item {
+    font-size: 12px;
+    gap: 20px;
+  }
+  .lh-marquee-content {
+    gap: 20px;
+  }
+
+  /* 2-Column Product Grid on Mobile */
+  .lh-hotspots-section {
+    padding: 36px 0;
+  }
+  .lh-hotspots-header {
+    margin-bottom: 18px;
+  }
+  .lh-hotspots-title {
+    font-size: 26px;
+  }
+  .lh-hotspots-subtitle {
+    display: none;
+  }
+  .lh-hotspots-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .lh-tile {
+    border-radius: 14px;
+    aspect-ratio: 3 / 4;
+  }
+  .lh-tile-label {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .lh-tile-label-title {
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lh-tile-label-price {
+    font-size: 10px;
+    color: var(--lh-text-muted);
+  }
+  .lh-hotspot-pin {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+  }
+
+  /* Featured Product on Mobile */
+  .lh-featured-section {
+    padding: 36px 0 48px;
+  }
+  .lh-featured-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 20px;
+  }
+  .lh-gallery-main {
+    border-radius: 16px;
+  }
+  .lh-gallery-thumbs {
+    display: none !important;
+  }
+  .lh-gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .lh-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #c8c4ba;
+    transition: all 0.2s ease;
+  }
+  .lh-dot.is-active {
+    background: var(--lh-dark);
+    width: 14px;
+    border-radius: 9999px;
+  }
+  .lh-featured-title {
+    font-size: 26px;
+    margin: 8px 0 10px;
+  }
+  .lh-price-current {
+    font-size: 22px;
+  }
+  .lh-price-compare {
+    font-size: 16px;
+  }
+  .lh-highlight-box {
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+  }
+  .lh-highlight-heading {
+    font-size: 13px;
+  }
+  .lh-highlight-text {
+    font-size: 12px;
+  }
+  .lh-size-pills {
+    gap: 8px;
+  }
+  .lh-size-btn {
+    min-width: 60px;
+    height: 40px;
+    font-size: 13px;
+  }
+  .lh-buy-actions {
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .lh-qty-selector {
+    width: 100px;
+    height: 48px;
+  }
+  .lh-btn-add-to-cart {
+    height: 48px;
+    font-size: 13px;
+  }
+  .lh-btn-buy-now {
+    height: 48px;
+    font-size: 13px;
+    margin-top: 10px;
+    background: #ffffff;
+  }
+  .lh-offers-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .lh-offer-card {
+    padding: 12px 14px;
+  }
+
+  /* Quick View Bottom Sheet */
+  .lh-quickview-backdrop {
+    align-items: flex-end;
+  }
+  .lh-quickview-modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 88vh;
+    padding: 12px 20px 28px;
+    transform: translateY(100%);
+  }
+  .lh-quickview-backdrop.is-open .lh-quickview-modal {
+    transform: translateY(0);
+  }
+  .lh-qv-drag-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: #dcd7ce;
+    border-radius: 2px;
+    margin: 4px auto 16px;
+  }
+  .lh-quickview-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .lh-qv-image-wrap {
+    max-height: 220px;
+    aspect-ratio: 16 / 9;
+  }
+  .lh-qv-title {
+    font-size: 18px;
+  }
+
+  /* Cart Drawer Fullscreen */
+  .lh-cart-drawer {
+    width: 100vw;
+  }
+
+  /* Footer 2 Columns on Mobile */
+  .lh-footer-section {
+    padding: 44px 0 24px;
+  }
+  .lh-footer-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .lh-footer-menus-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .lh-footer-logo {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .lh-footer-tagline {
+    font-size: 13px;
+  }
+  .lh-footer-bottom {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 11px;
   }
 }
