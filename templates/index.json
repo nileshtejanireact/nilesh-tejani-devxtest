@@ -1,75 +1,113 @@
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "loomhaus_hero": {
+      "type": "loomhaus-hero",
+      "settings": {
+        "badge": "NEW SEASON / AUTUMN / WINTER",
+        "heading": "The Winter Edit",
+        "subheading": "Warm layers, honest fabrics and fits that work every day. Discover the pieces our community keeps on repeat this season.",
+        "button_label": "SHOP NOW",
+        "button_link": "#loomhaus-wild",
+        "floating_product": "yellow-wool-jumper",
+        "stat_1_val": "4.8★",
+        "stat_1_lbl": "20k+ reviews",
+        "stat_2_val": "100%",
+        "stat_2_lbl": "organic cotton",
+        "stat_3_val": "30 days",
+        "stat_3_lbl": "free returns"
+      }
+    },
+    "loomhaus_hotspots": {
+      "type": "loomhaus-hotspots",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "tile_1": {
+          "type": "tile",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "product": "ocean-blue-shirt",
+            "hotspot_top": 35,
+            "hotspot_left": 50,
+            "fallback_title": "Ocean Blue Shirt",
+            "fallback_price": 33107
           }
         },
-        "button": {
-          "type": "buttons",
+        "tile_2": {
+          "type": "tile",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "product": "olive-green-jacket",
+            "hotspot_top": 40,
+            "hotspot_left": 50,
+            "fallback_title": "Olive Green Jacket",
+            "fallback_price": 34606
+          }
+        },
+        "tile_3": {
+          "type": "tile",
+          "settings": {
+            "product": "navy-sport-jacket",
+            "hotspot_top": 35,
+            "hotspot_left": 50,
+            "fallback_title": "Navy Sports Jacket",
+            "fallback_price": 38955
+          }
+        },
+        "tile_4": {
+          "type": "tile",
+          "settings": {
+            "product": "chequered-red-shirt",
+            "hotspot_top": 45,
+            "hotspot_left": 50,
+            "fallback_title": "Chequered Red Shirt",
+            "fallback_price": 33107
+          }
+        },
+        "tile_5": {
+          "type": "tile",
+          "settings": {
+            "product": "led-high-tops",
+            "hotspot_top": 55,
+            "hotspot_left": 50,
+            "fallback_title": "LED High Tops",
+            "fallback_price": 58543
+          }
+        },
+        "tile_6": {
+          "type": "tile",
+          "settings": {
+            "product": "striped-skirt-and-top",
+            "hotspot_top": 50,
+            "hotspot_left": 50,
+            "fallback_title": "Striped Skirt and Top",
+            "fallback_price": 27227
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
+        "tile_1",
+        "tile_2",
+        "tile_3",
+        "tile_4",
+        "tile_5",
+        "tile_6"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "kicker": "SHOP THE LOOK",
+        "heading": "Loomhaus in the wild",
+        "subtitle": "Tap the + to see and shop the product."
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "loomhaus_featured": {
+      "type": "loomhaus-featured-product",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "product": "classic-varsity-top",
+        "badge": "Loomhaus #1 Everyday Top",
+        "highlight_title": "Keeps its shape after 100+ washes",
+        "highlight_text": "Heavyweight 320 GSM combed cotton. Built to last through daily wear."
       }
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "loomhaus_hero",
+    "loomhaus_hotspots",
+    "loomhaus_featured"
   ]
 }

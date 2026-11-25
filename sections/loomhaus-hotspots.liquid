@@ -1,0 +1,137 @@
+{% comment %}
+  Loomhaus Product Grid with Hotspots (Loomhaus in the wild)
+  devx labs Assignment
+{% endcomment %}
+
+<section class="lh-hotspots-section" id="loomhaus-wild">
+  <div class="lh-container">
+    <div class="lh-hotspots-header">
+      <div>
+        <span class="lh-hotspots-kicker">{{ section.settings.kicker | default: 'SHOP THE LOOK' }}</span>
+        <h2 class="lh-hotspots-title">{{ section.settings.heading | default: 'Loomhaus in the wild' }}</h2>
+      </div>
+      <div class="lh-hotspots-subtitle">
+        {{ section.settings.subtitle | default: 'Tap the + to see and shop the product.' }}
+      </div>
+    </div>
+
+    <div class="lh-hotspots-grid">
+      {%- for block in section.blocks -%}
+        {%- assign p = all_products[block.settings.product] -%}
+        <div class="lh-tile" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'lh-tile-img', loading: 'lazy' }}
+          {%- elsif p.featured_image != blank -%}
+            {{ p.featured_image | image_url: width: 800 | image_tag: class: 'lh-tile-img', loading: 'lazy' }}
+          {%- else -%}
+            <div style="width: 100%; height: 100%; background: #e3ded6;"></div>
+          {%- endif -%}
+
+          <!-- Hotspot Button (+) -->
+          <button type="button" 
+                  class="lh-hotspot-pin" 
+                  style="top: {{ block.settings.hotspot_top | default: 50 }}%; left: {{ block.settings.hotspot_left | default: 50 }}%;"
+                  data-hotspot-product="{{ p.handle }}"
+                  aria-label="Quick View {{ p.title }}">
+            +
+          </button>
+
+          <!-- Label Pill -->
+          <div class="lh-tile-label">
+            <span>{{ p.title | default: block.settings.fallback_title }}</span> &middot; 
+            <span>{{ p.price | default: block.settings.fallback_price | money }}</span>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Loomhaus Hotspot Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "SHOP THE LOOK"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Loomhaus in the wild"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Tap the + to see and shop the product."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Product Tile",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Tile Image (Optional)"
+        },
+        {
+          "type": "range",
+          "id": "hotspot_top",
+          "min": 10,
+          "max": 90,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot Vertical Position (Top)",
+          "default": 45
+        },
+        {
+          "type": "range",
+          "id": "hotspot_left",
+          "min": 10,
+          "max": 90,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot Horizontal Position (Left)",
+          "default": 50
+        },
+        {
+          "type": "text",
+          "id": "fallback_title",
+          "label": "Fallback Title",
+          "default": "Loomhaus Essential"
+        },
+        {
+          "type": "number",
+          "id": "fallback_price",
+          "label": "Fallback Price (in cents)",
+          "default": 33100
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Hotspot Grid",
+      "blocks": [
+        { "type": "tile", "settings": { "hotspot_top": 35, "hotspot_left": 50, "fallback_title": "Ocean Blue Shirt", "fallback_price": 33107 } },
+        { "type": "tile", "settings": { "hotspot_top": 40, "hotspot_left": 50, "fallback_title": "Olive Green Jacket", "fallback_price": 34606 } },
+        { "type": "tile", "settings": { "hotspot_top": 35, "hotspot_left": 50, "fallback_title": "Navy Sports Jacket", "fallback_price": 38955 } },
+        { "type": "tile", "settings": { "hotspot_top": 45, "hotspot_left": 50, "fallback_title": "Chequered Red Shirt", "fallback_price": 33107 } },
+        { "type": "tile", "settings": { "hotspot_top": 55, "hotspot_left": 50, "fallback_title": "LED High Tops", "fallback_price": 58543 } },
+        { "type": "tile", "settings": { "hotspot_top": 50, "hotspot_left": 50, "fallback_title": "Striped Skirt and Top", "fallback_price": 27227 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

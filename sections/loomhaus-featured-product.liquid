@@ -1,0 +1,198 @@
+{% comment %}
+  Loomhaus Featured Product Section
+  devx labs Assignment
+{% endcomment %}
+
+{%- assign p = all_products[section.settings.product] | default: all_products['classic-varsity-top'] -%}
+{%- assign current_variant = p.selected_or_first_available_variant -%}
+
+<section class="lh-featured-section" id="loomhaus-featured">
+  <div class="lh-container">
+    <div class="lh-featured-grid" id="LoomhausFeaturedProduct">
+      <!-- Left: Gallery -->
+      <div class="lh-gallery-wrap">
+        <div class="lh-gallery-main">
+          <button type="button" class="lh-gallery-arrow lh-gallery-prev" id="LhGalleryPrev" aria-label="Previous image">&larr;</button>
+          
+          {%- if current_variant.featured_image != blank -%}
+            {{ current_variant.featured_image | image_url: width: 1000 | image_tag: id: 'LhFeaturedMainImg', alt: p.title }}
+          {%- elsif p.featured_image != blank -%}
+            {{ p.featured_image | image_url: width: 1000 | image_tag: id: 'LhFeaturedMainImg', alt: p.title }}
+          {%- else -%}
+            <img id="LhFeaturedMainImg" src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg" alt="Classic Varsity Top">
+          {%- endif -%}
+
+          <button type="button" class="lh-gallery-arrow lh-gallery-next" id="LhGalleryNext" aria-label="Next image">&rarr;</button>
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="lh-gallery-thumbs">
+          {%- if p.images.size > 0 -%}
+            {%- for img in p.images -%}
+              <button type="button" class="lh-thumb-btn {% if forloop.first %}is-active{% endif %}" data-src="{{ img | image_url: width: 1000 }}">
+                {{ img | image_url: width: 150 | image_tag: alt: p.title }}
+              </button>
+            {%- endfor -%}
+          {%- else -%}
+            <button type="button" class="lh-thumb-btn is-active" data-src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg">
+              <img src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg" alt="Thumbnail">
+            </button>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Right: Details -->
+      <div class="lh-featured-details">
+        <div class="lh-details-kicker-row">
+          <span class="lh-featured-badge">{{ section.settings.badge | default: 'Loomhaus #1 Everyday Top' }}</span>
+          <div class="lh-featured-rating">
+            <span class="lh-star">★</span>
+            <span>4.8 (850+ Reviews)</span>
+          </div>
+        </div>
+
+        <h2 class="lh-featured-title">{{ p.title | default: 'Classic Varsity Top' }}</h2>
+
+        <!-- Pricing with Dynamic Savings Calculation in Liquid -->
+        {%- assign compare_price = current_variant.compare_at_price | default: 40000 -%}
+        {%- assign var_price = current_variant.price | default: 32194 -%}
+        <div class="lh-price-row">
+          <span class="lh-price-current" id="LhFeaturedPriceCurrent">{{ var_price | money }}</span>
+          <span class="lh-price-compare" id="LhFeaturedPriceCompare">{{ compare_price | money }}</span>
+          
+          {%- if compare_price > var_price -%}
+            {%- assign save_pct = compare_price | minus: var_price | times: 100.0 | divided_by: compare_price | round -%}
+            <span class="lh-price-save-badge" id="LhFeaturedSaveBadge">SAVE {{ save_pct }}%</span>
+          {%- endif -%}
+        </div>
+        <div class="lh-price-tax-note">VAT included &middot; Free shipping</div>
+
+        <!-- Highlight Box -->
+        <div class="lh-highlight-box">
+          <div class="lh-highlight-check">✓</div>
+          <div>
+            <div class="lh-highlight-heading">{{ section.settings.highlight_title | default: 'Keeps its shape after 100+ washes' }}</div>
+            <div class="lh-highlight-text">{{ section.settings.highlight_text | default: 'Heavyweight 320 GSM combed cotton. Built to last through daily wear.' }}</div>
+          </div>
+        </div>
+
+        <!-- Color Swatches -->
+        <div class="lh-option-group">
+          <div class="lh-option-header">COLOR: <span id="LhSelectedColorLabel">BLACK</span></div>
+          <div class="lh-color-swatches">
+            <button type="button" class="lh-color-swatch-btn is-selected" data-color="Black" style="background-color: #111111;" title="Black"></button>
+            <button type="button" class="lh-color-swatch-btn" data-color="White" style="background-color: #ffffff; border: 1px solid #ddd;" title="White"></button>
+            <button type="button" class="lh-color-swatch-btn" data-color="Cream" style="background-color: #dcd6c8;" title="Cream"></button>
+          </div>
+        </div>
+
+        <!-- Size Pills -->
+        <div class="lh-option-group">
+          <div class="lh-option-header">SELECT SIZE</div>
+          <div class="lh-size-pills">
+            <div class="lh-size-pill-wrap">
+              <button type="button" class="lh-size-btn" data-size="XS">XS</button>
+            </div>
+            <div class="lh-size-pill-wrap">
+              <span class="lh-size-badge">Few items</span>
+              <button type="button" class="lh-size-btn" data-size="S">S</button>
+            </div>
+            <div class="lh-size-pill-wrap">
+              <button type="button" class="lh-size-btn is-selected" data-size="M">M</button>
+            </div>
+            <div class="lh-size-pill-wrap">
+              <span class="lh-size-badge">Best fit</span>
+              <button type="button" class="lh-size-btn" data-size="L">L</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add to Cart & Buy It Now -->
+        <form method="post" action="/cart/add" id="LoomhausFeaturedForm">
+          <input type="hidden" name="id" id="LhFeaturedVariantId" value="{{ current_variant.id | default: 0 }}">
+          <div class="lh-buy-actions">
+            <div class="lh-qty-selector">
+              <button type="button" class="lh-qty-btn" id="LhQtyMinus">-</button>
+              <input type="text" name="quantity" id="LhFeaturedQty" value="01" class="lh-qty-input" readonly>
+              <button type="button" class="lh-qty-btn" id="LhQtyPlus">+</button>
+            </div>
+
+            <button type="button" class="lh-btn-add-to-cart" id="LhFeaturedAddToCart">
+              <span>ADD TO CART</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+
+          <button type="submit" name="checkout" class="lh-btn-buy-now">BUY IT NOW</button>
+        </form>
+
+        <!-- Dynamic Offer Cards -->
+        <div class="lh-offers-grid">
+          <div class="lh-offer-card">
+            <div class="lh-offer-price" id="LhOffer1Price">Get it for {{ var_price | times: 0.9 | money }}</div>
+            <div class="lh-offer-sub">Use code <strong>LOOM10</strong> for 10% off your first order</div>
+            <button type="button" class="lh-offer-copy-btn" data-copy-code="LOOM10" aria-label="Copy LOOM10">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lh-offer-card">
+            <div class="lh-offer-price" id="LhOffer2Price">Get it for {{ var_price | times: 0.85 | money }}</div>
+            <div class="lh-offer-sub">Use code <strong>LOOM15</strong> on orders above ₹1,000</div>
+            <button type="button" class="lh-offer-copy-btn" data-copy-code="LOOM15" aria-label="Copy LOOM15">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JSON Data for Variant & AJAX Management -->
+<script id="LoomhausFeaturedProductJson" type="application/json">
+  {{ p | json }}
+</script>
+
+{% schema %}
+{
+  "name": "Loomhaus Featured Product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Featured Product",
+      "info": "Defaults to Classic Varsity Top"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge Kicker",
+      "default": "Loomhaus #1 Everyday Top"
+    },
+    {
+      "type": "text",
+      "id": "highlight_title",
+      "label": "Highlight Box Title",
+      "default": "Keeps its shape after 100+ washes"
+    },
+    {
+      "type": "textarea",
+      "id": "highlight_text",
+      "label": "Highlight Box Text",
+      "default": "Heavyweight 320 GSM combed cotton. Built to last through daily wear."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Featured Product"
+    }
+  ]
+}
+{% endschema %}
