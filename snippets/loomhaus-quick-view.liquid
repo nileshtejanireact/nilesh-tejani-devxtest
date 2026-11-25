@@ -1,6 +1,6 @@
 {% comment %}
   Loomhaus Quick View Popup (Desktop Modal / Mobile Bottom Sheet)
-  devx labs Assignment - 100% Matching Figma Design
+  devx labs Assignment - 100% Dynamic Options & Pixel-Perfect
 {% endcomment %}
 
 <div class="lh-quickview-backdrop" id="LoomhausQuickViewBackdrop" role="dialog" aria-modal="true" aria-labelledby="LhQvTitle">
@@ -14,7 +14,7 @@
         <img id="LhQvImage" src="" alt="Product Quick View" loading="lazy">
       </div>
 
-      <!-- Right: Details, Swatches & Size -->
+      <!-- Right: Details, Dynamic Swatches & Options -->
       <div class="lh-qv-info">
         <div class="lh-qv-header-row">
           <h3 class="lh-qv-title" id="LhQvTitle">Product Title</h3>
@@ -29,23 +29,23 @@
         <div class="lh-qv-price" id="LhQvPrice">₹0.00</div>
 
         <p class="lh-qv-desc" id="LhQvDesc">
-          Long-sleeved navy waterproof jacket in thin polyester with a soft mesh inside. Keeps you dry in all weather.
+          Crafted with premium materials for timeless wear and unmatched comfort.
         </p>
         
-        <!-- Color Option (Figma Swatch Buttons) -->
-        <div class="lh-qv-option-group" id="LhQvColorGroup">
-          <div class="lh-qv-label">COLOR</div>
+        <!-- Dynamic Color Option (Only rendered if product has Color option) -->
+        <div class="lh-qv-option-group" id="LhQvColorGroup" style="display: none;">
+          <div class="lh-qv-label" id="LhQvColorLabel">COLOR</div>
           <div class="lh-qv-color-swatches" id="LhQvColorSwatches">
-            <!-- Dynamically populated via JS: [ ● Black ] [ ○ White ] -->
+            <!-- Dynamically populated via JS from real product options -->
           </div>
         </div>
 
-        <!-- Size Option Dropdown -->
-        <div class="lh-qv-option-group" id="LhQvSizeGroup">
-          <div class="lh-qv-label">SIZE</div>
+        <!-- Dynamic Size / Secondary Option (Only rendered if product has Size/Multiple options) -->
+        <div class="lh-qv-option-group" id="LhQvSizeGroup" style="display: none;">
+          <div class="lh-qv-label" id="LhQvSizeLabel">SIZE</div>
           <div class="lh-qv-select-wrap">
-            <select id="LhQvSelect" class="lh-qv-select" aria-label="Choose your size">
-              <option value="" disabled selected>Choose your size</option>
+            <select id="LhQvSelect" class="lh-qv-select" aria-label="Choose option">
+              <option value="" disabled selected>Choose option</option>
             </select>
             <div class="lh-qv-select-arrow">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -54,7 +54,7 @@
             </div>
           </div>
           <div id="LhQvSizeError" style="display: none; color: #c25e40; font-size: 11.5px; font-weight: 600; margin-top: 6px;">
-            Please select a size to continue
+            Please select an option to continue
           </div>
         </div>
 

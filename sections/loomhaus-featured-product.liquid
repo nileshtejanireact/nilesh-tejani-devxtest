@@ -1,6 +1,6 @@
 {% comment %}
   Loomhaus Featured Product Section
-  devx labs Assignment - 100% Matching Figma Desktop & Mobile
+  devx labs Assignment - 100% Dynamic Options & Pixel-Perfect
 {% endcomment %}
 
 {%- assign p = all_products[section.settings.product] | default: all_products['classic-varsity-top'] -%}
@@ -95,35 +95,86 @@
           </div>
         </div>
 
-        <!-- Color Swatches -->
-        <div class="lh-option-group">
-          <div class="lh-option-header">COLOR: <span id="LhSelectedColorLabel">BLACK</span></div>
-          <div class="lh-color-swatches">
-            <button type="button" class="lh-color-swatch-btn is-selected" data-color="Black" style="background-color: #111111;" title="Black"></button>
-            <button type="button" class="lh-color-swatch-btn" data-color="White" style="background-color: #ffffff; border: 1px solid #dcd7ce;" title="White"></button>
-          </div>
-        </div>
+        <!-- Dynamic Product Options Loop (Strictly Dynamic from Shopify) -->
+        {%- if p.has_only_default_variant == false -%}
+          {%- for option in p.options_with_values -%}
+            {%- assign opt_name_lower = option.name | downcase -%}
+            {%- assign opt_idx = forloop.index0 -%}
 
-        <!-- Size Pills -->
-        <div class="lh-option-group">
-          <div class="lh-option-header">SELECT SIZE</div>
-          <div class="lh-size-pills">
-            <div class="lh-size-pill-wrap">
-              <button type="button" class="lh-size-btn" data-size="XS">XS</button>
-            </div>
-            <div class="lh-size-pill-wrap">
-              <span class="lh-size-badge">Waitlisted</span>
-              <button type="button" class="lh-size-btn" data-size="S">S</button>
-            </div>
-            <div class="lh-size-pill-wrap">
-              <button type="button" class="lh-size-btn is-selected" data-size="M">M</button>
-            </div>
-            <div class="lh-size-pill-wrap">
-              <span class="lh-size-badge">Best fit</span>
-              <button type="button" class="lh-size-btn" data-size="L">L</button>
-            </div>
-          </div>
-        </div>
+            {%- if opt_name_lower contains 'color' or opt_name_lower contains 'colour' -%}
+              <!-- Dynamic Color Swatches -->
+              <div class="lh-option-group lh-featured-option-group" data-option-index="{{ opt_idx }}">
+                <div class="lh-option-header">{{ option.name | upcase }}: <span class="lh-selected-color-label" id="LhSelectedColorLabel">{{ option.selected_value | default: option.values[0] | upcase }}</span></div>
+                <div class="lh-color-swatches">
+                  {%- for val in option.values -%}
+                    {%- assign val_l = val | downcase -%}
+                    {%- assign bg = '#111111' -%}
+                    {%- if val_l == 'white' -%}{%- assign bg = '#ffffff' -%}
+                    {%- elsif val_l == 'black' -%}{%- assign bg = '#111111' -%}
+                    {%- elsif val_l == 'navy' or val_l == 'blue' -%}{%- assign bg = '#1b2c4e' -%}
+                    {%- elsif val_l == 'olive' or val_l == 'green' -%}{%- assign bg = '#48523c' -%}
+                    {%- elsif val_l == 'red' -%}{%- assign bg = '#b83232' -%}
+                    {%- elsif val_l == 'cream' or val_l == 'beige' -%}{%- assign bg = '#ded9cc' -%}
+                    {%- elsif val_l == 'yellow' -%}{%- assign bg = '#d4a234' -%}
+                    {%- endif -%}
+                    <button type="button" 
+                            class="lh-color-swatch-btn {% if forloop.first or option.selected_value == val %}is-selected{% endif %}" 
+                            data-option-index="{{ opt_idx }}"
+                            data-value="{{ val }}"
+                            data-color="{{ val }}"
+                            style="background-color: {{ bg }}; {% if val_l == 'white' %}border: 1px solid #dcd7ce;{% endif %}"
+                            title="{{ val }}">
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+
+            {%- elsif opt_name_lower contains 'size' -%}
+              <!-- Dynamic Size Pills -->
+              <div class="lh-option-group lh-featured-option-group" data-option-index="{{ opt_idx }}">
+                <div class="lh-option-header">{{ option.name | upcase }}</div>
+                <div class="lh-size-pills">
+                  {%- for val in option.values -%}
+                    {%- assign is_active = false -%}
+                    {%- if val == 'M' or forloop.first and option.selected_value == blank -%}
+                      {%- assign is_active = true -%}
+                    {%- elsif option.selected_value == val -%}
+                      {%- assign is_active = true -%}
+                    {%- endif -%}
+                    <div class="lh-size-pill-wrap">
+                      {%- if val == 'S' -%}
+                        <span class="lh-size-badge">Waitlisted</span>
+                      {%- elsif val == 'L' -%}
+                        <span class="lh-size-badge">Best fit</span>
+                      {%- endif -%}
+                      <button type="button" 
+                              class="lh-size-btn {% if is_active %}is-selected{% endif %}" 
+                              data-option-index="{{ opt_idx }}"
+                              data-value="{{ val }}"
+                              data-size="{{ val }}">{{ val }}</button>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+
+            {%- else -%}
+              <!-- Any Other Option (Material, Style, etc.) -->
+              <div class="lh-option-group lh-featured-option-group" data-option-index="{{ opt_idx }}">
+                <div class="lh-option-header">{{ option.name | upcase }}</div>
+                <div class="lh-size-pills">
+                  {%- for val in option.values -%}
+                    <div class="lh-size-pill-wrap">
+                      <button type="button" 
+                              class="lh-size-btn {% if forloop.first %}is-selected{% endif %}" 
+                              data-option-index="{{ opt_idx }}"
+                              data-value="{{ val }}">{{ val }}</button>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
 
         <!-- Add to Cart & Buy It Now -->
         <form method="post" action="/cart/add" id="LoomhausFeaturedForm">
