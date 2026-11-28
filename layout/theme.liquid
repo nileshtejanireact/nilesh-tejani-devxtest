@@ -66,17 +66,23 @@
     {{ content_for_header }}
 
     {%- liquid
-      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
-      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
-      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+      if settings.type_body_font != blank and settings.type_body_font.family != blank
+        assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+        assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+        assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+      endif
     %}
 
     {% style %}
-      {{ settings.type_body_font | font_face: font_display: 'swap' }}
-      {{ body_font_bold | font_face: font_display: 'swap' }}
-      {{ body_font_italic | font_face: font_display: 'swap' }}
-      {{ body_font_bold_italic | font_face: font_display: 'swap' }}
-      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+      {% if settings.type_body_font != blank and settings.type_body_font.family != blank %}
+        {{ settings.type_body_font | font_face: font_display: 'swap' }}
+        {{ body_font_bold | font_face: font_display: 'swap' }}
+        {{ body_font_italic | font_face: font_display: 'swap' }}
+        {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+      {% endif %}
+      {% if settings.type_header_font != blank and settings.type_header_font.family != blank %}
+        {{ settings.type_header_font | font_face: font_display: 'swap' }}
+      {% endif %}
 
       {% for scheme in settings.color_schemes -%}
         {% assign scheme_classes = scheme_classes | append: ', .color-' | append: scheme.id %}
@@ -289,16 +295,16 @@
       {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
-    {%- unless settings.type_body_font.system? -%}
+    {%- if settings.type_body_font != blank and settings.type_body_font.family != blank and settings.type_body_font.system? == false -%}
       {% comment %}theme-check-disable AssetPreload{% endcomment %}
       <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
       {% comment %}theme-check-enable AssetPreload{% endcomment %}
-    {%- endunless -%}
-    {%- unless settings.type_header_font.system? -%}
+    {%- endif -%}
+    {%- if settings.type_header_font != blank and settings.type_header_font.family != blank and settings.type_header_font.system? == false -%}
       {% comment %}theme-check-disable AssetPreload{% endcomment %}
       <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
       {% comment %}theme-check-enable AssetPreload{% endcomment %}
-    {%- endunless -%}
+    {%- endif -%}
 
     {%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
       {{ 'component-localization-form.css' | asset_url | stylesheet_tag: preload: true }}
@@ -319,16 +325,17 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
-  </head>
+    {{ 'loomhaus-global.css' | asset_url | stylesheet_tag }}
+</head>
 
-  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body class="gradient loomhaus-active{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
 
-    {%- if settings.cart_type == 'drawer' -%}
-      {%- render 'cart-drawer' -%}
-    {%- endif -%}
+    {%- comment -%}
+      Loomhaus uses its own self-contained cart drawer rendered before </body>
+    {%- endcomment -%}
 
     {% sections 'header-group' %}
 
@@ -398,8 +405,10 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
-    {%- if settings.cart_type == 'drawer' -%}
-      <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%}
-  </body>
+
+  
+  {% render 'loomhaus-quick-view' %}
+  {% render 'loomhaus-cart-drawer' %}
+  <script src="{{ 'loomhaus.js' | asset_url }}" defer="defer"></script>
+</body>
 </html>

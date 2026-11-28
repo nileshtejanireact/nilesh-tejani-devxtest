@@ -1,0 +1,68 @@
+{% comment %}
+  Loomhaus Custom Header
+  devx labs Assignment - 100% Matching Figma Desktop & Mobile
+{% endcomment %}
+
+<header class="lh-header-section">
+  <div class="lh-container">
+    <div class="lh-header-inner">
+      <a href="/" class="lh-logo">{{ section.settings.logo_text | default: 'Loomhaus' }}</a>
+      
+      <div class="lh-header-tagline">
+        {{ section.settings.tagline | default: 'Clothes made to be worn for years, not seasons' }}
+      </div>
+
+      <div class="lh-header-actions">
+        <a href="{{ section.settings.button_link | default: '#loomhaus-featured' }}" class="lh-btn-header-drop">
+          <span>{{ section.settings.button_text | default: 'SHOP THE DROP' }}</span>
+          <span style="font-size: 14px;">&rarr;</span>
+        </a>
+
+        <button type="button" class="lh-cart-trigger" data-cart-trigger aria-label="Open Cart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="lh-cart-count-badge">{{ cart.item_count }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Loomhaus Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Brand Logo Text",
+      "default": "Loomhaus"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Header Tagline",
+      "default": "Clothes made to be worn for years, not seasons"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Action Button Label",
+      "default": "SHOP THE DROP"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Action Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Header"
+    }
+  ]
+}
+{% endschema %}

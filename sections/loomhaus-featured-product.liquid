@@ -1,0 +1,322 @@
+{% comment %}
+  Loomhaus Featured Product Section
+  devx labs Assignment - 100% Dynamic Options & Pixel-Perfect
+{% endcomment %}
+
+{%- assign p = all_products[section.settings.product] | default: all_products['classic-varsity-top'] -%}
+{%- assign current_variant = p.selected_or_first_available_variant -%}
+{%- assign initial_img_url = current_variant.featured_image | default: p.featured_image | default: p.images[0] | image_url: width: 1000 -%}
+
+<section class="lh-featured-section" id="loomhaus-featured">
+  <div class="lh-container">
+    <div class="lh-featured-grid" id="LoomhausFeaturedProduct">
+      <!-- Left: Gallery Slider -->
+      <div class="lh-gallery-wrap">
+        <div class="lh-gallery-main">
+          <button type="button" class="lh-gallery-arrow lh-gallery-prev" id="LhGalleryPrev" onclick="window.LoomhausGallery && window.LoomhausGallery.prev()" aria-label="Previous image">&larr;</button>
+          
+          <img id="LhFeaturedMainImg" 
+               src="{{ initial_img_url }}" 
+               alt="{{ p.title }}"
+               style="width: 100%; height: 100%; object-fit: cover; display: block;">
+
+          <button type="button" class="lh-gallery-arrow lh-gallery-next" id="LhGalleryNext" onclick="window.LoomhausGallery && window.LoomhausGallery.next()" aria-label="Next image">&rarr;</button>
+        </div>
+
+        <!-- Mobile Carousel Dots Indicator -->
+        <div class="lh-gallery-dots" id="LhGalleryDots">
+          {%- if p.images.size > 0 -%}
+            {%- for img in p.images -%}
+              <span class="lh-dot {% if forloop.first %}is-active{% endif %}" onclick="window.LoomhausGallery && window.LoomhausGallery.setIndex({{ forloop.index0 }}, '{{ img | image_url: width: 1000 }}')"></span>
+            {%- endfor -%}
+          {%- else -%}
+            <span class="lh-dot is-active"></span>
+          {%- endif -%}
+        </div>
+
+        <!-- Desktop Thumbnails -->
+        <div class="lh-gallery-thumbs" id="LhGalleryThumbs">
+          {%- if p.images.size > 0 -%}
+            {%- for img in p.images -%}
+              {%- assign thumb_src = img | image_url: width: 1000 -%}
+              <button type="button" 
+                      class="lh-thumb-btn {% if forloop.first %}is-active{% endif %}" 
+                      data-index="{{ forloop.index0 }}"
+                      data-src="{{ thumb_src }}"
+                      onclick="window.LoomhausGallery && window.LoomhausGallery.setIndex({{ forloop.index0 }}, '{{ thumb_src }}')">
+                <img src="{{ img | image_url: width: 150 }}" alt="{{ p.title }} Thumbnail {{ forloop.index }}" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+              </button>
+            {%- endfor -%}
+          {%- else -%}
+            <button type="button" class="lh-thumb-btn is-active" data-index="0" data-src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg">
+              <img src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
+            </button>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- Right: Details -->
+      <div class="lh-featured-details">
+        <div class="lh-details-kicker-row">
+          <span class="lh-featured-badge">{{ section.settings.badge | default: 'Loomhaus #1 Everyday Top' }}</span>
+          <div class="lh-featured-rating">
+            <span class="lh-star">★</span>
+            <span>4.8 (1200+ Reviews)</span>
+          </div>
+        </div>
+
+        <h2 class="lh-featured-title">{{ p.title | default: 'Classic Varsity Top' }}</h2>
+
+        <!-- Pricing with Dynamic Savings Calculation in Liquid -->
+        {%- assign compare_price = current_variant.compare_at_price | default: 40000 -%}
+        {%- assign var_price = current_variant.price | default: 32194 -%}
+        <div class="lh-price-row">
+          <span class="lh-price-current" id="LhFeaturedPriceCurrent">{{ var_price | money }}</span>
+          <span class="lh-price-compare" id="LhFeaturedPriceCompare">{{ compare_price | money }}</span>
+          
+          {%- if compare_price > var_price -%}
+            {%- assign save_pct = compare_price | minus: var_price | times: 100.0 | divided_by: compare_price | round -%}
+            <span class="lh-price-save-badge" id="LhFeaturedSaveBadge">SAVE {{ save_pct }}%</span>
+          {%- endif -%}
+        </div>
+        <div class="lh-price-tax-note">VAT included &middot; Free shipping</div>
+
+        <!-- Highlight Box -->
+        <div class="lh-highlight-box">
+          <div class="lh-highlight-check">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div>
+            <div class="lh-highlight-heading">{{ section.settings.highlight_title | default: 'Keeps its shape after 100+ washes' }}</div>
+            <div class="lh-highlight-text">{{ section.settings.highlight_text | default: 'Heavyweight 320 GSM combed cotton. Built to last through daily wear.' }}</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Product Options Loop (Strictly Dynamic from Shopify) -->
+        {%- if p.has_only_default_variant == false -%}
+          {%- for option in p.options_with_values -%}
+            {%- assign opt_name_lower = option.name | downcase -%}
+            {%- assign opt_idx = forloop.index0 -%}
+
+            {%- if opt_name_lower contains 'color' or opt_name_lower contains 'colour' -%}
+              <!-- Dynamic Color Swatches -->
+              <div class="lh-option-group lh-featured-option-group" data-option-index="{{ opt_idx }}">
+                <div class="lh-option-header">{{ option.name | upcase }}: <span class="lh-selected-color-label" id="LhSelectedColorLabel">{{ option.selected_value | default: option.values[0] | upcase }}</span></div>
+                <div class="lh-color-swatches">
+                  {%- for val in option.values -%}
+                    {%- assign val_l = val | downcase -%}
+                    {%- assign bg = '#111111' -%}
+                    {%- if val_l == 'white' -%}{%- assign bg = '#ffffff' -%}
+                    {%- elsif val_l == 'black' -%}{%- assign bg = '#111111' -%}
+                    {%- elsif val_l == 'navy' or val_l == 'blue' -%}{%- assign bg = '#1b2c4e' -%}
+                    {%- elsif val_l == 'olive' or val_l == 'green' -%}{%- assign bg = '#48523c' -%}
+                    {%- elsif val_l == 'red' -%}{%- assign bg = '#b83232' -%}
+                    {%- elsif val_l == 'cream' or val_l == 'beige' -%}{%- assign bg = '#ded9cc' -%}
+                    {%- elsif val_l == 'yellow' -%}{%- assign bg = '#d4a234' -%}
+                    {%- endif -%}
+                    <button type="button" 
+                            class="lh-color-swatch-btn {% if forloop.first or option.selected_value == val %}is-selected{% endif %}" 
+                            data-option-index="{{ opt_idx }}"
+                            data-value="{{ val }}"
+                            data-color="{{ val }}"
+                            style="background-color: {{ bg }}; {% if val_l == 'white' %}border: 1px solid #dcd7ce;{% endif %}"
+                            title="{{ val }}">
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+
+            {%- elsif opt_name_lower contains 'size' -%}
+              <!-- Dynamic Size Pills -->
+              <div class="lh-option-group lh-featured-option-group" data-option-index="{{ opt_idx }}">
+                <div class="lh-option-header">{{ option.name | upcase }}</div>
+                <div class="lh-size-pills">
+                  {%- for val in option.values -%}
+                    {%- assign is_active = false -%}
+                    {%- if val == 'M' or forloop.first and option.selected_value == blank -%}
+                      {%- assign is_active = true -%}
+                    {%- elsif option.selected_value == val -%}
+                      {%- assign is_active = true -%}
+                    {%- endif -%}
+                    <div class="lh-size-pill-wrap">
+                      {%- if val == 'S' -%}
+                        <span class="lh-size-badge">Waitlisted</span>
+                      {%- elsif val == 'L' -%}
+                        <span class="lh-size-badge">Best fit</span>
+                      {%- endif -%}
+                      <button type="button" 
+                              class="lh-size-btn {% if is_active %}is-selected{% endif %}" 
+                              data-option-index="{{ opt_idx }}"
+                              data-value="{{ val }}"
+                              data-size="{{ val }}">{{ val }}</button>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+
+            {%- else -%}
+              <!-- Any Other Option (Material, Style, etc.) -->
+              <div class="lh-option-group lh-featured-option-group" data-option-index="{{ opt_idx }}">
+                <div class="lh-option-header">{{ option.name | upcase }}</div>
+                <div class="lh-size-pills">
+                  {%- for val in option.values -%}
+                    <div class="lh-size-pill-wrap">
+                      <button type="button" 
+                              class="lh-size-btn {% if forloop.first %}is-selected{% endif %}" 
+                              data-option-index="{{ opt_idx }}"
+                              data-value="{{ val }}">{{ val }}</button>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        <!-- Add to Cart & Buy It Now -->
+        <form method="post" action="/cart/add" id="LoomhausFeaturedForm">
+          <input type="hidden" name="id" id="LhFeaturedVariantId" value="{{ current_variant.id | default: 0 }}">
+          <div class="lh-buy-actions">
+            <div class="lh-qty-selector">
+              <button type="button" class="lh-qty-btn" id="LhQtyMinus">-</button>
+              <input type="text" name="quantity" id="LhFeaturedQty" value="01" class="lh-qty-input" readonly>
+              <button type="button" class="lh-qty-btn" id="LhQtyPlus">+</button>
+            </div>
+
+            <button type="button" class="lh-btn-add-to-cart" id="LhFeaturedAddToCart">
+              <span>ADD TO CART</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+
+          <button type="submit" name="checkout" class="lh-btn-buy-now">BUY IT NOW</button>
+        </form>
+
+        <!-- Dynamic Offer Cards -->
+        <div class="lh-offers-grid">
+          <div class="lh-offer-card">
+            <div class="lh-offer-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <div class="lh-offer-body">
+              <div class="lh-offer-price" id="LhOffer1Price">Get it for {{ var_price | times: 0.9 | money }}</div>
+              <div class="lh-offer-sub">Use code <strong>LOOM10</strong> for 10% off</div>
+            </div>
+            <button type="button" class="lh-offer-copy-btn" data-copy-code="LOOM10" aria-label="Copy LOOM10">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="lh-offer-card">
+            <div class="lh-offer-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <div class="lh-offer-body">
+              <div class="lh-offer-price" id="LhOffer2Price">Get it for {{ var_price | times: 0.85 | money }}</div>
+              <div class="lh-offer-sub">Buy 2, save 15% (LOOM15)</div>
+            </div>
+            <button type="button" class="lh-offer-copy-btn" data-copy-code="LOOM15" aria-label="Copy LOOM15">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Inline Gallery Controller: Zero Lag & Independent of Load Timing -->
+<script>
+  window.LoomhausGallery = {
+    currentIndex: 0,
+    setIndex: function(idx, src) {
+      this.currentIndex = idx;
+      var mainImg = document.getElementById('LhFeaturedMainImg');
+      if (mainImg && src) {
+        mainImg.removeAttribute('srcset');
+        mainImg.src = src;
+      }
+      var thumbs = document.querySelectorAll('.lh-thumb-btn');
+      for (var i = 0; i < thumbs.length; i++) {
+        thumbs[i].classList.toggle('is-active', i === idx);
+      }
+      var dots = document.querySelectorAll('#LhGalleryDots .lh-dot');
+      for (var j = 0; j < dots.length; j++) {
+        dots[j].classList.toggle('is-active', j === idx);
+      }
+    },
+    prev: function() {
+      var thumbs = document.querySelectorAll('.lh-thumb-btn');
+      if (!thumbs.length) return;
+      var nextIdx = (this.currentIndex - 1 + thumbs.length) % thumbs.length;
+      var btn = thumbs[nextIdx];
+      var src = btn ? btn.getAttribute('data-src') : '';
+      this.setIndex(nextIdx, src);
+    },
+    next: function() {
+      var thumbs = document.querySelectorAll('.lh-thumb-btn');
+      if (!thumbs.length) return;
+      var nextIdx = (this.currentIndex + 1) % thumbs.length;
+      var btn = thumbs[nextIdx];
+      var src = btn ? btn.getAttribute('data-src') : '';
+      this.setIndex(nextIdx, src);
+    }
+  };
+</script>
+
+<!-- JSON Data for Variant & AJAX Management -->
+<script id="LoomhausFeaturedProductJson" type="application/json">
+  {{ p | json }}
+</script>
+
+{% schema %}
+{
+  "name": "Loomhaus Featured Product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Featured Product",
+      "info": "Defaults to Classic Varsity Top"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge Kicker",
+      "default": "Loomhaus #1 Everyday Top"
+    },
+    {
+      "type": "text",
+      "id": "highlight_title",
+      "label": "Highlight Box Title",
+      "default": "Keeps its shape after 100+ washes"
+    },
+    {
+      "type": "textarea",
+      "id": "highlight_text",
+      "label": "Highlight Box Text",
+      "default": "Heavyweight 320 GSM combed cotton. Built to last through daily wear."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Featured Product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,180 @@
+{% comment %}
+  Loomhaus Hero Section & Infinite Marquee
+  devx labs Assignment
+{% endcomment %}
+
+<section class="lh-hero-section">
+  <div class="lh-container">
+    <div class="lh-hero-grid">
+      <!-- Left Column: Copy & Stats -->
+      <div class="lh-hero-content">
+        <span class="lh-hero-badge">{{ section.settings.badge | default: 'NEW SEASON / AUTUMN / WINTER' }}</span>
+        
+        <h1 class="lh-hero-title">{{ section.settings.heading | default: 'The Winter Edit' }}</h1>
+        
+        <p class="lh-hero-desc">
+          {{ section.settings.subheading | default: 'Warm layers, honest fabrics and fits that work every day. Discover the pieces our community keeps on repeat this season.' }}
+        </p>
+
+        <a href="{{ section.settings.button_link | default: '#loomhaus-wild' }}" class="lh-btn-primary">
+          <span>{{ section.settings.button_label | default: 'SHOP NOW' }}</span>
+          <span class="lh-arrow">&rarr;</span>
+        </a>
+
+        <!-- Stats Row -->
+        <div class="lh-hero-stats">
+          <div class="lh-stat-item">
+            <span class="lh-stat-val">{{ section.settings.stat_1_val | default: '4.8★' }}</span>
+            <span class="lh-stat-label">{{ section.settings.stat_1_lbl | default: '20k+ reviews' }}</span>
+          </div>
+          <div class="lh-stat-item">
+            <span class="lh-stat-val">{{ section.settings.stat_2_val | default: '100%' }}</span>
+            <span class="lh-stat-label">{{ section.settings.stat_2_lbl | default: 'organic cotton' }}</span>
+          </div>
+          <div class="lh-stat-item">
+            <span class="lh-stat-val">{{ section.settings.stat_3_val | default: '30 days' }}</span>
+            <span class="lh-stat-label">{{ section.settings.stat_3_lbl | default: 'free returns' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Arch Visual & Floating Card -->
+      <div class="lh-hero-media-wrap">
+        <div class="lh-hero-backdrop-circle"></div>
+        <div class="lh-hero-arch-card">
+          {%- if section.settings.hero_image != blank -%}
+            {{ section.settings.hero_image | image_url: width: 1000 | image_tag: class: 'lh-hero-img', alt: 'The Winter Edit' }}
+          {%- else -%}
+            <img src="{{ 'loomhaus-hero.jpg' | asset_url }}" alt="Loomhaus Winter Edit Hero" class="lh-hero-img" loading="eager">
+          {%- endif -%}
+        </div>
+
+        <!-- Floating Product Card -->
+        {%- assign float_prod = all_products[section.settings.floating_product] | default: all_products['yellow-wool-jumper'] -%}
+        <div class="lh-hero-floating-card" data-hotspot-product="{{ float_prod.handle | default: 'yellow-wool-jumper' }}">
+          {%- if float_prod.featured_image != blank -%}
+            <img src="{{ float_prod.featured_image | image_url: width: 100 }}" alt="{{ float_prod.title }}" class="lh-hero-floating-thumb">
+          {%- else -%}
+            <img src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-yellow-wool-jumper-black.jpg" alt="Yellow Wool Jumper" class="lh-hero-floating-thumb">
+          {%- endif -%}
+          <div class="lh-hero-floating-info">
+            <span class="lh-hero-floating-title">{{ float_prod.title | default: 'Yellow Wool Jumper' }}</span>
+            <span class="lh-hero-floating-price">{{ float_prod.price | default: 41859 | money }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Infinite Marquee Strip -->
+<div class="lh-marquee-strip">
+  <div class="lh-marquee-content">
+    {%- for i in (1..6) -%}
+      <div class="lh-marquee-item">
+        <span>Organic cotton</span>
+        <span class="lh-marquee-separator">✦</span>
+        <span>Made to last</span>
+        <span class="lh-marquee-separator">✦</span>
+        <span>Ships 48 hrs</span>
+        <span class="lh-marquee-separator">✦</span>
+        <span>Free returns</span>
+        <span class="lh-marquee-separator">✦</span>
+        <span>Ethically made</span>
+        <span class="lh-marquee-separator">✦</span>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Loomhaus Hero & Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Kicker Badge",
+      "default": "NEW SEASON / AUTUMN / WINTER"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Winter Edit"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Warm layers, honest fabrics and fits that work every day. Discover the pieces our community keeps on repeat this season."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Arch Image"
+    },
+    {
+      "type": "product",
+      "id": "floating_product",
+      "label": "Floating Card Product"
+    },
+    {
+      "type": "header",
+      "content": "Stats Row"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_val",
+      "label": "Stat 1 Value",
+      "default": "4.8★"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_lbl",
+      "label": "Stat 1 Label",
+      "default": "20k+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_val",
+      "label": "Stat 2 Value",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_lbl",
+      "label": "Stat 2 Label",
+      "default": "organic cotton"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_val",
+      "label": "Stat 3 Value",
+      "default": "30 days"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_lbl",
+      "label": "Stat 3 Label",
+      "default": "free returns"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Hero & Marquee"
+    }
+  ]
+}
+{% endschema %}

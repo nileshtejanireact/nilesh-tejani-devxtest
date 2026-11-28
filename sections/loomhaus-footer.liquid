@@ -1,0 +1,73 @@
+{% comment %}
+  Loomhaus Custom Footer
+  devx labs Assignment - 100% Matching Figma Desktop & Mobile
+{% endcomment %}
+
+<footer class="lh-footer-section">
+  <div class="lh-container">
+    <div class="lh-footer-grid">
+      <!-- Brand Column -->
+      <div class="lh-footer-brand-col">
+        <div class="lh-footer-logo">{{ section.settings.logo_text | default: 'Loomhaus' }}</div>
+        <p class="lh-footer-tagline">
+          {{ section.settings.tagline | default: 'Clothes made to be worn for years, not seasons.' }}
+        </p>
+      </div>
+
+      <!-- Links Container (2 columns on mobile) -->
+      <div class="lh-footer-menus-wrap">
+        <!-- Shop Column -->
+        <div class="lh-footer-col">
+          <div class="lh-footer-heading">SHOP</div>
+          <ul class="lh-footer-links">
+            <li><a href="/collections/all">Women</a></li>
+            <li><a href="/collections/all">Men</a></li>
+            <li><a href="/collections/all">New arrivals</a></li>
+            <li><a href="/collections/all">Bestsellers</a></li>
+          </ul>
+        </div>
+
+        <!-- Help Column -->
+        <div class="lh-footer-col">
+          <div class="lh-footer-heading">HELP</div>
+          <ul class="lh-footer-links">
+            <li><a href="/policies/shipping-policy">Shipping</a></li>
+            <li><a href="/policies/refund-policy">Returns</a></li>
+            <li><a href="/pages/contact">Size guide</a></li>
+            <li><a href="/pages/contact">Contact us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="lh-footer-bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} Loomhaus. All rights reserved.</span>
+      <span>Direct Factory Standards &middot; Organic Bio-Washed Apparel</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Loomhaus Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Brand Logo",
+      "default": "Loomhaus"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Clothes made to be worn for years, not seasons."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Footer"
+    }
+  ]
+}
+{% endschema %}
