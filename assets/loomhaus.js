@@ -269,12 +269,23 @@ window.Loomhaus = (function() {
     const c = (colorName || '').toLowerCase().trim();
     if (c === 'black') return { hex: '#111111', isWhite: false };
     if (c === 'white') return { hex: '#ffffff', isWhite: true };
-    if (c === 'navy' || c === 'blue') return { hex: '#1b2c4e', isWhite: false };
-    if (c === 'olive' || c === 'green') return { hex: '#48523c', isWhite: false };
-    if (c === 'red') return { hex: '#b83232', isWhite: false };
-    if (c === 'yellow') return { hex: '#d4a234', isWhite: false };
-    if (c === 'cream' || c === 'beige') return { hex: '#ded9cc', isWhite: false };
-    return { hex: '#333333', isWhite: false };
+    if (c === 'navy' || c === 'navy blue') return { hex: '#1b2c4e', isWhite: false };
+    if (c === 'blue' || c === 'royal blue') return { hex: '#26547c', isWhite: false };
+    if (c === 'light blue' || c === 'sky blue') return { hex: '#a0c4e2', isWhite: false };
+    if (c === 'olive' || c === 'olive green' || c === 'green') return { hex: '#48523c', isWhite: false };
+    if (c === 'dark green' || c === 'forest green') return { hex: '#1d3e26', isWhite: false };
+    if (c === 'red' || c === 'crimson') return { hex: '#b83232', isWhite: false };
+    if (c === 'maroon' || c === 'burgundy' || c === 'wine') return { hex: '#58111a', isWhite: false };
+    if (c === 'yellow' || c === 'mustard') return { hex: '#d4a234', isWhite: false };
+    if (c === 'cream' || c === 'beige' || c === 'sand') return { hex: '#ded9cc', isWhite: false };
+    if (c === 'tan' || c === 'khaki' || c === 'camel') return { hex: '#c29b6e', isWhite: false };
+    if (c === 'brown' || c === 'chocolate') return { hex: '#5a3825', isWhite: false };
+    if (c === 'grey' || c === 'gray' || c === 'heather') return { hex: '#8a8a8a', isWhite: false };
+    if (c === 'charcoal') return { hex: '#333333', isWhite: false };
+    if (c === 'pink' || c === 'blush' || c === 'rose') return { hex: '#e8a598', isWhite: false };
+    if (c === 'orange') return { hex: '#e66b27', isWhite: false };
+    if (c === 'purple' || c === 'violet') return { hex: '#6b3e8c', isWhite: false };
+    return { hex: '#222222', isWhite: false };
   }
 
   function renderQuickView(product) {
@@ -282,12 +293,16 @@ window.Loomhaus = (function() {
     const qvTitle = document.getElementById('LhQvTitle');
     const qvPrice = document.getElementById('LhQvPrice');
     const qvDesc = document.getElementById('LhQvDesc');
+    const qvColorGroup = document.getElementById('LhQvColorGroup');
+    const qvColorLabel = document.getElementById('LhQvColorLabel');
     const qvColorSwatches = document.getElementById('LhQvColorSwatches');
+    const qvSizeGroup = document.getElementById('LhQvSizeGroup');
+    const qvSizeLabel = document.getElementById('LhQvSizeLabel');
     const qvSelect = document.getElementById('LhQvSelect');
     const qvSizeError = document.getElementById('LhQvSizeError');
     const qvAddBtn = document.getElementById('LhQvAddToCart');
 
-    if (qvImage) qvImage.src = product.featured_image || '';
+    if (qvImage) qvImage.src = product.featured_image || (product.images && product.images[0]) || '';
     if (qvTitle) qvTitle.textContent = product.title;
     if (qvPrice) qvPrice.textContent = formatMoney(product.price);
     if (qvDesc) {
@@ -296,93 +311,137 @@ window.Loomhaus = (function() {
       qvDesc.textContent = temp.textContent || temp.innerText || '';
     }
 
-    const colors = [];
-    const sizes = [];
-
-    product.variants.forEach(v => {
-      const parts = (v.title || '').split('/').map(s => s.trim());
-      parts.forEach(p => {
-        const lower = p.toLowerCase();
-        if (['black', 'white', 'navy', 'blue', 'green', 'olive', 'red', 'cream', 'yellow'].includes(lower)) {
-          if (!colors.includes(p)) colors.push(p);
-        } else if (['xs', 's', 'm', 'l', 'xl', 'xxl', '2xl'].includes(lower)) {
-          if (!sizes.includes(p)) sizes.push(p);
-        }
-      });
-    });
-
-    if (colors.length === 0) colors.push('Black', 'White');
-    if (sizes.length === 0) sizes.push('XS', 'S', 'M', 'L');
-
-    qvSelectedColor = colors[0];
-    qvSelectedSize = ''; // Must remain empty until explicitly selected by user
-
-    // Reset validation UI
+    // Reset validation error state
     if (qvSizeError) qvSizeError.style.display = 'none';
     if (qvSelect) qvSelect.style.borderColor = '#d8d4ca';
 
-    // Render Color Swatches [ ● Black ] [ ○ White ]
-    if (qvColorSwatches) {
-      qvColorSwatches.innerHTML = colors.map((col, idx) => {
-        const { hex, isWhite } = getColorHex(col);
-        const isSelected = idx === 0;
-        return `
-          <button type="button" class="lh-qv-swatch ${isSelected ? 'is-selected' : ''}" data-color="${col}">
-            <span class="lh-qv-swatch-dot" style="background-color: ${hex}; ${isWhite ? 'border: 1px solid #d0ccc2;' : ''}"></span>
-            <span class="lh-qv-swatch-name">${col}</span>
-          </button>
-        `;
-      }).join('');
-
-      qvColorSwatches.querySelectorAll('.lh-qv-swatch').forEach(btn => {
-        btn.addEventListener('click', () => {
-          qvColorSwatches.querySelectorAll('.lh-qv-swatch').forEach(b => b.classList.remove('is-selected'));
-          btn.classList.add('is-selected');
-          qvSelectedColor = btn.dataset.color;
-          updateQvVariant();
+    // Parse product options dynamically
+    const normalizedOptions = (product.options || []).map((opt, idx) => {
+      const pos = idx + 1;
+      if (typeof opt === 'string') {
+        const valSet = [];
+        (product.variants || []).forEach(v => {
+          const vVal = v.options ? v.options[idx] : v['option' + pos];
+          if (vVal && !valSet.includes(vVal)) valSet.push(vVal);
         });
-      });
+        return { name: opt, position: pos, index: idx, values: valSet };
+      }
+      return {
+        name: opt.name || `Option ${pos}`,
+        position: opt.position || pos,
+        index: (opt.position ? opt.position - 1 : idx),
+        values: opt.values || []
+      };
+    }).filter(opt => opt.name.toLowerCase() !== 'title' || (opt.values && opt.values[0] !== 'Default Title'));
+
+    // Check for Color option
+    const colorOpt = normalizedOptions.find(o => /colou?r/i.test(o.name));
+    // Check for Secondary/Size option
+    const otherOpt = normalizedOptions.find(o => !/colou?r/i.test(o.name));
+
+    let qvSelectedColor = '';
+    let qvSelectedOther = '';
+
+    // 1. Dynamic Color Swatches (100% dynamic: hidden if product has no color option)
+    if (colorOpt && colorOpt.values && colorOpt.values.length > 0) {
+      if (qvColorGroup) qvColorGroup.style.display = 'block';
+      if (qvColorLabel) qvColorLabel.textContent = colorOpt.name.toUpperCase();
+      qvSelectedColor = colorOpt.values[0];
+
+      if (qvColorSwatches) {
+        qvColorSwatches.innerHTML = colorOpt.values.map((col, idx) => {
+          const { hex, isWhite } = getColorHex(col);
+          const isSelected = idx === 0;
+          return `
+            <button type="button" class="lh-qv-swatch ${isSelected ? 'is-selected' : ''}" data-color="${col}">
+              <span class="lh-qv-swatch-dot" style="background-color: ${hex}; ${isWhite ? 'border: 1px solid #d0ccc2;' : ''}"></span>
+              <span class="lh-qv-swatch-name">${col}</span>
+            </button>
+          `;
+        }).join('');
+
+        qvColorSwatches.querySelectorAll('.lh-qv-swatch').forEach(btn => {
+          btn.addEventListener('click', () => {
+            qvColorSwatches.querySelectorAll('.lh-qv-swatch').forEach(b => b.classList.remove('is-selected'));
+            btn.classList.add('is-selected');
+            qvSelectedColor = btn.dataset.color;
+            updateQvVariant();
+          });
+        });
+      }
+    } else {
+      // Product has NO color option - completely hide swatch group
+      if (qvColorGroup) qvColorGroup.style.display = 'none';
+      if (qvColorSwatches) qvColorSwatches.innerHTML = '';
+      qvSelectedColor = '';
     }
 
-    // Render Size Dropdown (First option is disabled placeholder)
-    if (qvSelect) {
-      qvSelect.innerHTML = `
-        <option value="" disabled selected>Choose your size</option>
-        ${sizes.map(s => `<option value="${s}">${s}</option>`).join('')}
-      `;
+    // 2. Dynamic Size / Secondary Option (100% dynamic)
+    if (otherOpt && otherOpt.values && otherOpt.values.length > 0) {
+      if (qvSizeGroup) qvSizeGroup.style.display = 'block';
+      if (qvSizeLabel) qvSizeLabel.textContent = otherOpt.name.toUpperCase();
+      qvSelectedOther = ''; // Must remain unselected until user explicitly picks
 
-      qvSelect.onchange = function() {
-        qvSelectedSize = qvSelect.value;
-        if (qvSizeError) qvSizeError.style.display = 'none';
-        qvSelect.style.borderColor = '#d8d4ca';
-        updateQvVariant();
-      };
+      if (qvSelect) {
+        const optionName = otherOpt.name.toLowerCase();
+        qvSelect.innerHTML = `
+          <option value="" disabled selected>Choose your ${optionName}</option>
+          ${otherOpt.values.map(val => `<option value="${val}">${val}</option>`).join('')}
+        `;
+
+        qvSelect.onchange = function() {
+          qvSelectedOther = qvSelect.value;
+          if (qvSizeError) qvSizeError.style.display = 'none';
+          qvSelect.style.borderColor = '#d8d4ca';
+          updateQvVariant();
+        };
+      }
+    } else {
+      // Product has no size/secondary option (e.g. single variant)
+      if (qvSizeGroup) qvSizeGroup.style.display = 'none';
+      qvSelectedOther = '';
+    }
+
+    // Dynamic Variant Matching
+    function findMatchingVariant(requireAll = false) {
+      if (requireAll && otherOpt && !qvSelectedOther) {
+        return null; // Enforce user selection
+      }
+
+      return (product.variants || []).find(v => {
+        if (colorOpt && qvSelectedColor) {
+          const colVal = v.options ? v.options[colorOpt.index] : v['option' + colorOpt.position];
+          if ((colVal || '').toLowerCase() !== qvSelectedColor.toLowerCase()) return false;
+        }
+        if (otherOpt && qvSelectedOther) {
+          const othVal = v.options ? v.options[otherOpt.index] : v['option' + otherOpt.position];
+          if ((othVal || '').toLowerCase() !== qvSelectedOther.toLowerCase()) return false;
+        }
+        return true;
+      }) || product.variants[0];
     }
 
     function updateQvVariant() {
-      let match = product.variants.find(v => {
-        const t = v.title.toLowerCase();
-        const hasCol = t.includes(qvSelectedColor.toLowerCase());
-        const hasSize = qvSelectedSize ? t.split(/[\s\/]+/).includes(qvSelectedSize.toLowerCase()) : false;
-        return hasCol && (qvSelectedSize ? hasSize : true);
-      });
-
-      if (!match) match = product.variants[0];
-
-      if (match && qvPrice) {
-        qvPrice.textContent = formatMoney(match.price);
-      }
-      if (match && match.featured_image && match.featured_image.src && qvImage) {
-        qvImage.src = match.featured_image.src;
+      const match = findMatchingVariant(false);
+      if (match) {
+        if (qvPrice) qvPrice.textContent = formatMoney(match.price);
+        if (match.featured_image && match.featured_image.src && qvImage) {
+          qvImage.src = match.featured_image.src;
+        }
       }
     }
 
-    // Add to Cart with STRICT Size Validation
+    // Initial variant sync
+    updateQvVariant();
+
+    // Add to Cart with STRICT Option/Size Validation
     if (qvAddBtn) {
       qvAddBtn.onclick = async function() {
-        // Enforce size selection: if user hasn't selected a size, prevent add to cart!
-        if (sizes.length > 0 && !qvSelectedSize) {
-          if (qvSizeError) qvSizeError.style.display = 'block';
+        if (otherOpt && !qvSelectedOther) {
+          if (qvSizeError) {
+            qvSizeError.textContent = `Please select a ${otherOpt.name.toLowerCase()} to continue`;
+            qvSizeError.style.display = 'block';
+          }
           if (qvSelect) {
             qvSelect.style.borderColor = '#c25e40';
             qvSelect.focus();
@@ -390,16 +449,17 @@ window.Loomhaus = (function() {
           return;
         }
 
-        let match = product.variants.find(v => {
-          const t = v.title.toLowerCase();
-          const hasCol = t.includes(qvSelectedColor.toLowerCase());
-          const hasSize = t.split(/[\s\/]+/).includes(qvSelectedSize.toLowerCase());
-          return hasCol && hasSize;
-        });
+        const match = findMatchingVariant(true);
+        if (!match) {
+          if (qvSizeError) {
+            qvSizeError.textContent = 'This variant combination is currently unavailable.';
+            qvSizeError.style.display = 'block';
+          }
+          return;
+        }
 
-        const variantId = match ? match.id : product.variants[0].id;
         closeQuickView();
-        await addToCart(variantId, 1);
+        await addToCart(match.id, 1);
       };
     }
   }
@@ -424,7 +484,7 @@ window.Loomhaus = (function() {
   }
 
   /* ==========================================================================
-     Featured Product (Variant Switcher, Savings, Dynamic Offers)
+     Featured Product (100% Dynamic Options, Savings & Offers)
      ========================================================================== */
   function setupFeaturedProduct() {
     const section = document.getElementById('LoomhausFeaturedProduct');
@@ -440,9 +500,6 @@ window.Loomhaus = (function() {
       return;
     }
 
-    let selectedColor = 'Black';
-    let selectedSize = 'M';
-
     const mainImg = document.getElementById('LhFeaturedMainImg');
     const priceCurrent = document.getElementById('LhFeaturedPriceCurrent');
     const priceCompare = document.getElementById('LhFeaturedPriceCompare');
@@ -453,11 +510,27 @@ window.Loomhaus = (function() {
     const offer2Price = document.getElementById('LhOffer2Price');
     const colorLabel = document.getElementById('LhSelectedColorLabel');
 
+    // Dynamic map of selected options: { "0": "val1", "1": "val2", ... }
+    const selectedOptions = {};
+    section.querySelectorAll('.lh-featured-option-group').forEach(group => {
+      const idx = group.dataset.optionIndex;
+      const activeBtn = group.querySelector('.is-selected');
+      if (activeBtn) {
+        selectedOptions[idx] = activeBtn.dataset.value || activeBtn.dataset.color || activeBtn.dataset.size;
+      }
+    });
+
     function updateVariant() {
       const variant = productData.variants.find(v => {
-        const title = v.title.toLowerCase();
-        return title.includes(selectedColor.toLowerCase()) && title.includes(selectedSize.toLowerCase());
+        return Object.keys(selectedOptions).every(idx => {
+          const val = selectedOptions[idx];
+          if (!val) return true;
+          const optVal = v.options ? v.options[idx] : v['option' + (parseInt(idx) + 1)];
+          return (optVal || '').toLowerCase() === val.toLowerCase();
+        });
       }) || productData.variants[0];
+
+      if (!variant) return;
 
       if (variantIdInput) variantIdInput.value = variant.id;
 
@@ -492,24 +565,21 @@ window.Loomhaus = (function() {
       }
     }
 
-    // Color Swatch buttons
-    section.querySelectorAll('.lh-color-swatch-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        section.querySelectorAll('.lh-color-swatch-btn').forEach(b => b.classList.remove('is-selected'));
-        btn.classList.add('is-selected');
-        selectedColor = btn.dataset.color || 'Black';
-        if (colorLabel) colorLabel.textContent = selectedColor.toUpperCase();
-        updateVariant();
-      });
-    });
-
-    // Size Pill buttons
-    section.querySelectorAll('.lh-size-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        section.querySelectorAll('.lh-size-btn').forEach(b => b.classList.remove('is-selected'));
-        btn.classList.add('is-selected');
-        selectedSize = btn.dataset.size || 'M';
-        updateVariant();
+    // Attach click handlers dynamically to all option buttons across all option groups
+    section.querySelectorAll('.lh-featured-option-group').forEach(group => {
+      const idx = group.dataset.optionIndex;
+      const buttons = group.querySelectorAll('button[data-value], .lh-color-swatch-btn, .lh-size-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('is-selected'));
+          btn.classList.add('is-selected');
+          const val = btn.dataset.value || btn.dataset.color || btn.dataset.size;
+          selectedOptions[idx] = val;
+          if (btn.classList.contains('lh-color-swatch-btn') && colorLabel) {
+            colorLabel.textContent = val.toUpperCase();
+          }
+          updateVariant();
+        });
       });
     });
 
