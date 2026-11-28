@@ -69,7 +69,6 @@ window.Loomhaus = (function() {
 
     // Check if any product in Black and M exists in cart
     const hasBlackAndM = cart.items.some(item => {
-      // Don't treat the gift jacket itself as trigger
       if (item.handle === jacketHandle || item.variant_id == jacketVariantId) return false;
       const title = (item.variant_title || '').toLowerCase();
       const options = item.options_with_values ? item.options_with_values.map(o => (o.value || '').toLowerCase()) : [];
@@ -78,11 +77,9 @@ window.Loomhaus = (function() {
       return hasBlack && hasM;
     });
 
-    // Check if jacket is currently in cart
     const jacketItem = cart.items.find(item => item.handle === jacketHandle || item.variant_id == jacketVariantId);
 
     if (hasBlackAndM && !jacketItem) {
-      // Auto-add Soft Winter Jacket
       isCartBusy = true;
       try {
         await fetch('/cart/add.js', {
@@ -102,7 +99,6 @@ window.Loomhaus = (function() {
         isCartBusy = false;
       }
     } else if (!hasBlackAndM && jacketItem) {
-      // Auto-remove Soft Winter Jacket
       isCartBusy = true;
       try {
         await fetch('/cart/change.js', {
@@ -157,17 +153,14 @@ window.Loomhaus = (function() {
   function renderCart(cart) {
     if (!cart) return;
 
-    // Update count badges
     dom.cartCountBadges.forEach(b => {
       b.textContent = cart.item_count || 0;
     });
 
-    // Update subtotal
     if (dom.cartSubtotal) {
       dom.cartSubtotal.textContent = formatMoney(cart.total_price);
     }
 
-    // Render line items
     if (!dom.cartItemsList) return;
 
     if (cart.items.length === 0) {
@@ -251,6 +244,7 @@ window.Loomhaus = (function() {
 
   /* ==========================================================================
      Quick View Popup (Desktop Modal / Mobile Bottom Sheet)
+     100% Matching Image 2 and Figma Specs with Size Validation
      ========================================================================== */
   async function openQuickView(handle) {
     if (!dom.quickViewBackdrop) return;
@@ -290,6 +284,7 @@ window.Loomhaus = (function() {
     const qvDesc = document.getElementById('LhQvDesc');
     const qvColorSwatches = document.getElementById('LhQvColorSwatches');
     const qvSelect = document.getElementById('LhQvSelect');
+    const qvSizeError = document.getElementById('LhQvSizeError');
     const qvAddBtn = document.getElementById('LhQvAddToCart');
 
     if (qvImage) qvImage.src = product.featured_image || '';
@@ -320,8 +315,13 @@ window.Loomhaus = (function() {
     if (sizes.length === 0) sizes.push('XS', 'S', 'M', 'L');
 
     qvSelectedColor = colors[0];
-    qvSelectedSize = '';
+    qvSelectedSize = ''; // Must remain empty until explicitly selected by user
 
+    // Reset validation UI
+    if (qvSizeError) qvSizeError.style.display = 'none';
+    if (qvSelect) qvSelect.style.borderColor = '#d8d4ca';
+
+    // Render Color Swatches [ ● Black ] [ ○ White ]
     if (qvColorSwatches) {
       qvColorSwatches.innerHTML = colors.map((col, idx) => {
         const { hex, isWhite } = getColorHex(col);
@@ -344,6 +344,7 @@ window.Loomhaus = (function() {
       });
     }
 
+    // Render Size Dropdown (First option is disabled placeholder)
     if (qvSelect) {
       qvSelect.innerHTML = `
         <option value="" disabled selected>Choose your size</option>
@@ -352,6 +353,8 @@ window.Loomhaus = (function() {
 
       qvSelect.onchange = function() {
         qvSelectedSize = qvSelect.value;
+        if (qvSizeError) qvSizeError.style.display = 'none';
+        qvSelect.style.borderColor = '#d8d4ca';
         updateQvVariant();
       };
     }
@@ -360,8 +363,8 @@ window.Loomhaus = (function() {
       let match = product.variants.find(v => {
         const t = v.title.toLowerCase();
         const hasCol = t.includes(qvSelectedColor.toLowerCase());
-        const hasSize = qvSelectedSize ? t.split(/[\s\/]+/).includes(qvSelectedSize.toLowerCase()) : true;
-        return hasCol && hasSize;
+        const hasSize = qvSelectedSize ? t.split(/[\s\/]+/).includes(qvSelectedSize.toLowerCase()) : false;
+        return hasCol && (qvSelectedSize ? hasSize : true);
       });
 
       if (!match) match = product.variants[0];
@@ -374,12 +377,23 @@ window.Loomhaus = (function() {
       }
     }
 
+    // Add to Cart with STRICT Size Validation
     if (qvAddBtn) {
       qvAddBtn.onclick = async function() {
+        // Enforce size selection: if user hasn't selected a size, prevent add to cart!
+        if (sizes.length > 0 && !qvSelectedSize) {
+          if (qvSizeError) qvSizeError.style.display = 'block';
+          if (qvSelect) {
+            qvSelect.style.borderColor = '#c25e40';
+            qvSelect.focus();
+          }
+          return;
+        }
+
         let match = product.variants.find(v => {
           const t = v.title.toLowerCase();
           const hasCol = t.includes(qvSelectedColor.toLowerCase());
-          const hasSize = qvSelectedSize ? t.split(/[\s\/]+/).includes(qvSelectedSize.toLowerCase()) : true;
+          const hasSize = t.split(/[\s\/]+/).includes(qvSelectedSize.toLowerCase());
           return hasCol && hasSize;
         });
 
@@ -472,7 +486,6 @@ window.Loomhaus = (function() {
         offer2Price.textContent = `Get it for ${formatMoney(discounted)}`;
       }
 
-      // Update image if variant has featured image
       if (variant.featured_image && variant.featured_image.src && mainImg) {
         mainImg.removeAttribute('srcset');
         mainImg.src = variant.featured_image.src;
