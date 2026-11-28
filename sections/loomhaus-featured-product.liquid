@@ -5,45 +5,51 @@
 
 {%- assign p = all_products[section.settings.product] | default: all_products['classic-varsity-top'] -%}
 {%- assign current_variant = p.selected_or_first_available_variant -%}
+{%- assign initial_img_url = current_variant.featured_image | default: p.featured_image | default: p.images[0] | image_url: width: 1000 -%}
 
 <section class="lh-featured-section" id="loomhaus-featured">
   <div class="lh-container">
     <div class="lh-featured-grid" id="LoomhausFeaturedProduct">
-      <!-- Left: Gallery -->
+      <!-- Left: Gallery Slider -->
       <div class="lh-gallery-wrap">
         <div class="lh-gallery-main">
-          <button type="button" class="lh-gallery-arrow lh-gallery-prev" id="LhGalleryPrev" aria-label="Previous image">&larr;</button>
+          <button type="button" class="lh-gallery-arrow lh-gallery-prev" id="LhGalleryPrev" onclick="window.LoomhausGallery && window.LoomhausGallery.prev()" aria-label="Previous image">&larr;</button>
           
-          {%- if current_variant.featured_image != blank -%}
-            {{ current_variant.featured_image | image_url: width: 1000 | image_tag: id: 'LhFeaturedMainImg', alt: p.title }}
-          {%- elsif p.featured_image != blank -%}
-            {{ p.featured_image | image_url: width: 1000 | image_tag: id: 'LhFeaturedMainImg', alt: p.title }}
-          {%- else -%}
-            <img id="LhFeaturedMainImg" src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg" alt="Classic Varsity Top">
-          {%- endif -%}
+          <img id="LhFeaturedMainImg" 
+               src="{{ initial_img_url }}" 
+               alt="{{ p.title }}"
+               style="width: 100%; height: 100%; object-fit: cover; display: block;">
 
-          <button type="button" class="lh-gallery-arrow lh-gallery-next" id="LhGalleryNext" aria-label="Next image">&rarr;</button>
+          <button type="button" class="lh-gallery-arrow lh-gallery-next" id="LhGalleryNext" onclick="window.LoomhausGallery && window.LoomhausGallery.next()" aria-label="Next image">&rarr;</button>
         </div>
 
         <!-- Mobile Carousel Dots Indicator -->
         <div class="lh-gallery-dots" id="LhGalleryDots">
-          <span class="lh-dot is-active"></span>
-          <span class="lh-dot"></span>
-          <span class="lh-dot"></span>
-          <span class="lh-dot"></span>
+          {%- if p.images.size > 0 -%}
+            {%- for img in p.images -%}
+              <span class="lh-dot {% if forloop.first %}is-active{% endif %}" onclick="window.LoomhausGallery && window.LoomhausGallery.setIndex({{ forloop.index0 }}, '{{ img | image_url: width: 1000 }}')"></span>
+            {%- endfor -%}
+          {%- else -%}
+            <span class="lh-dot is-active"></span>
+          {%- endif -%}
         </div>
 
         <!-- Desktop Thumbnails -->
-        <div class="lh-gallery-thumbs">
+        <div class="lh-gallery-thumbs" id="LhGalleryThumbs">
           {%- if p.images.size > 0 -%}
             {%- for img in p.images -%}
-              <button type="button" class="lh-thumb-btn {% if forloop.first %}is-active{% endif %}" data-src="{{ img | image_url: width: 1000 }}">
-                {{ img | image_url: width: 150 | image_tag: alt: p.title }}
+              {%- assign thumb_src = img | image_url: width: 1000 -%}
+              <button type="button" 
+                      class="lh-thumb-btn {% if forloop.first %}is-active{% endif %}" 
+                      data-index="{{ forloop.index0 }}"
+                      data-src="{{ thumb_src }}"
+                      onclick="window.LoomhausGallery && window.LoomhausGallery.setIndex({{ forloop.index0 }}, '{{ thumb_src }}')">
+                <img src="{{ img | image_url: width: 150 }}" alt="{{ p.title }} Thumbnail {{ forloop.index }}" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
               </button>
             {%- endfor -%}
           {%- else -%}
-            <button type="button" class="lh-thumb-btn is-active" data-src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg">
-              <img src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg" alt="Thumbnail">
+            <button type="button" class="lh-thumb-btn is-active" data-index="0" data-src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg">
+              <img src="https://cdn.shopify.com/s/files/1/0688/7591/1222/files/loomhaus-classic-varsity-top-black.jpg" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
             </button>
           {%- endif -%}
         </div>
@@ -182,6 +188,45 @@
     </div>
   </div>
 </section>
+
+<!-- Inline Gallery Controller: Zero Lag & Independent of Load Timing -->
+<script>
+  window.LoomhausGallery = {
+    currentIndex: 0,
+    setIndex: function(idx, src) {
+      this.currentIndex = idx;
+      var mainImg = document.getElementById('LhFeaturedMainImg');
+      if (mainImg && src) {
+        mainImg.removeAttribute('srcset');
+        mainImg.src = src;
+      }
+      var thumbs = document.querySelectorAll('.lh-thumb-btn');
+      for (var i = 0; i < thumbs.length; i++) {
+        thumbs[i].classList.toggle('is-active', i === idx);
+      }
+      var dots = document.querySelectorAll('#LhGalleryDots .lh-dot');
+      for (var j = 0; j < dots.length; j++) {
+        dots[j].classList.toggle('is-active', j === idx);
+      }
+    },
+    prev: function() {
+      var thumbs = document.querySelectorAll('.lh-thumb-btn');
+      if (!thumbs.length) return;
+      var nextIdx = (this.currentIndex - 1 + thumbs.length) % thumbs.length;
+      var btn = thumbs[nextIdx];
+      var src = btn ? btn.getAttribute('data-src') : '';
+      this.setIndex(nextIdx, src);
+    },
+    next: function() {
+      var thumbs = document.querySelectorAll('.lh-thumb-btn');
+      if (!thumbs.length) return;
+      var nextIdx = (this.currentIndex + 1) % thumbs.length;
+      var btn = thumbs[nextIdx];
+      var src = btn ? btn.getAttribute('data-src') : '';
+      this.setIndex(nextIdx, src);
+    }
+  };
+</script>
 
 <!-- JSON Data for Variant & AJAX Management -->
 <script id="LoomhausFeaturedProductJson" type="application/json">
