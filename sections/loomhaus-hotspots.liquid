@@ -1,6 +1,6 @@
 {% comment %}
   Loomhaus Product Grid with Hotspots (Loomhaus in the wild)
-  devx labs Assignment
+  devx labs Assignment - 100% Matching Figma Desktop & Mobile
 {% endcomment %}
 
 <section class="lh-hotspots-section" id="loomhaus-wild">
@@ -36,10 +36,10 @@
             +
           </button>
 
-          <!-- Label Pill -->
+          <!-- Label Pill (2-line layout matching mobile Figma) -->
           <div class="lh-tile-label">
-            <span>{{ p.title | default: block.settings.fallback_title }}</span> &middot; 
-            <span>{{ p.price | default: block.settings.fallback_price | money }}</span>
+            <div class="lh-tile-label-title">{{ p.title | default: block.settings.fallback_title }}</div>
+            <div class="lh-tile-label-price">{{ p.price | default: block.settings.fallback_price | money }}</div>
           </div>
         </div>
       {%- endfor -%}

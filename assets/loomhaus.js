@@ -307,7 +307,6 @@ window.Loomhaus = (function() {
     const sizes = [];
 
     product.variants.forEach(v => {
-      // Options can be [Size, Color] or [Color, Size]
       const parts = (v.title || '').split('/').map(s => s.trim());
       parts.forEach(p => {
         const lower = p.toLowerCase();
@@ -319,7 +318,6 @@ window.Loomhaus = (function() {
       });
     });
 
-    // Fallbacks if not detected
     if (colors.length === 0) colors.push('Black', 'White');
     if (sizes.length === 0) sizes.push('XS', 'S', 'M', 'L');
 
@@ -363,7 +361,6 @@ window.Loomhaus = (function() {
     }
 
     function updateQvVariant() {
-      // Find matching variant
       let match = product.variants.find(v => {
         const t = v.title.toLowerCase();
         const hasCol = t.includes(qvSelectedColor.toLowerCase());
@@ -447,6 +444,7 @@ window.Loomhaus = (function() {
     const offer1Price = document.getElementById('LhOffer1Price');
     const offer2Price = document.getElementById('LhOffer2Price');
     const colorLabel = document.getElementById('LhSelectedColorLabel');
+    const dotsWrap = document.getElementById('LhGalleryDots');
 
     function updateVariant() {
       // Find matching variant
@@ -535,30 +533,36 @@ window.Loomhaus = (function() {
       };
     }
 
-    // Gallery Thumbnails
-    section.querySelectorAll('.lh-thumb-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        section.querySelectorAll('.lh-thumb-btn').forEach(b => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-        const src = btn.dataset.src;
-        if (src && mainImg) mainImg.src = src;
-      });
+    // Gallery Thumbnails & Mobile Dots
+    const thumbs = Array.from(section.querySelectorAll('.lh-thumb-btn'));
+    function setActiveGalleryIndex(idx) {
+      thumbs.forEach((t, i) => t.classList.toggle('is-active', i === idx));
+      if (thumbs[idx] && mainImg) {
+        mainImg.src = thumbs[idx].dataset.src;
+      }
+      if (dotsWrap) {
+        const dots = dotsWrap.querySelectorAll('.lh-dot');
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      }
+    }
+
+    thumbs.forEach((btn, idx) => {
+      btn.addEventListener('click', () => setActiveGalleryIndex(idx));
     });
 
     // Gallery Arrows
     const prevArrow = document.getElementById('LhGalleryPrev');
     const nextArrow = document.getElementById('LhGalleryNext');
-    const thumbs = Array.from(section.querySelectorAll('.lh-thumb-btn'));
     if (prevArrow && nextArrow && thumbs.length > 0) {
       prevArrow.onclick = () => {
         const activeIdx = thumbs.findIndex(t => t.classList.contains('is-active'));
         const nextIdx = (activeIdx - 1 + thumbs.length) % thumbs.length;
-        thumbs[nextIdx].click();
+        setActiveGalleryIndex(nextIdx);
       };
       nextArrow.onclick = () => {
         const activeIdx = thumbs.findIndex(t => t.classList.contains('is-active'));
         const nextIdx = (activeIdx + 1) % thumbs.length;
-        thumbs[nextIdx].click();
+        setActiveGalleryIndex(nextIdx);
       };
     }
 
