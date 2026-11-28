@@ -1,0 +1,76 @@
+{% comment %}
+  Loomhaus Custom Cart Drawer (Desktop Slideout / Mobile Fullscreen)
+  devx labs Assignment
+{% endcomment %}
+
+{%- assign auto_gift_jacket = all_products['dark-winter-jacket'] -%}
+
+<div class="lh-cart-overlay" id="LoomhausCartOverlay" aria-hidden="true"></div>
+
+<aside class="lh-cart-drawer" id="LoomhausCartDrawer" role="dialog" aria-modal="true" aria-label="Shopping Cart">
+  <div class="lh-drawer-header">
+    <div class="lh-drawer-title">
+      Your Cart (<span class="lh-cart-count-badge" style="position: static; display: inline-block;">{{ cart.item_count }}</span>)
+    </div>
+    <button type="button" class="lh-drawer-close" id="LoomhausCartClose" aria-label="Close cart">&times;</button>
+  </div>
+
+  <div class="lh-drawer-items" id="LoomhausCartItems">
+    {%- if cart.items.size == 0 -%}
+      <div style="text-align: center; padding: 40px 0; color: #6b6d64;">
+        <p style="font-size: 16px; margin-bottom: 16px;">Your cart is empty.</p>
+        <a href="#loomhaus-featured" class="lh-btn-header-drop" onclick="Loomhaus.closeCart();">Start Shopping</a>
+      </div>
+    {%- else -%}
+      {%- for item in cart.items -%}
+        {%- assign is_gift = false -%}
+        {%- if item.handle == 'dark-winter-jacket' or item.properties._auto_gift != blank -%}
+          {%- assign is_gift = true -%}
+        {%- endif -%}
+        <div class="lh-cart-item" data-key="{{ item.key }}">
+          <img src="{{ item.image | image_url: width: 160 }}" alt="{{ item.title }}" class="lh-cart-item-img">
+          <div class="lh-cart-item-details">
+            {%- if is_gift -%}
+              <span class="lh-auto-gift-badge">🎁 Auto-added Gift (Black + M)</span>
+            {%- endif -%}
+            <div class="lh-cart-item-title">{{ item.product.title }}</div>
+            {%- if item.variant.title != blank and item.variant.title != 'Default Title' -%}
+              <div class="lh-cart-item-variant">{{ item.variant.title }}</div>
+            {%- endif -%}
+            <div class="lh-cart-item-price">{{ item.final_line_price | money }}</div>
+            
+            <div class="lh-item-actions">
+              {%- if is_gift -%}
+                <span style="font-size: 12px; color: #2e7d32; font-weight: 600;">Qty: {{ item.quantity }}</span>
+              {%- else -%}
+                <div class="lh-drawer-qty-pill">
+                  <button type="button" class="lh-drawer-qty-btn" onclick="Loomhaus.changeItem('{{ item.key }}', {{ item.quantity | minus: 1 }})">-</button>
+                  <span class="lh-drawer-qty-num">{{ item.quantity }}</span>
+                  <button type="button" class="lh-drawer-qty-btn" onclick="Loomhaus.changeItem('{{ item.key }}', {{ item.quantity | plus: 1 }})">+</button>
+                </div>
+                <button type="button" class="lh-item-remove-btn" onclick="Loomhaus.changeItem('{{ item.key }}', 0)">Remove</button>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+
+  <div class="lh-drawer-footer">
+    <div class="lh-drawer-subtotal-row">
+      <span>Subtotal</span>
+      <span id="LoomhausCartSubtotal">{{ cart.total_price | money }}</span>
+    </div>
+    <form action="/checkout" method="post">
+      <button type="submit" name="checkout" class="lh-btn-checkout">PROCEED TO CHECKOUT &rarr;</button>
+    </form>
+  </div>
+</aside>
+
+<script>
+  window.LoomhausConfig = {
+    jacketVariantId: {{ auto_gift_jacket.variants[0].id | default: 0 }},
+    jacketHandle: '{{ auto_gift_jacket.handle | default: "dark-winter-jacket" }}'
+  };
+</script>

@@ -1,0 +1,45 @@
+{% comment %}
+  Loomhaus Custom Announcement Bar
+  devx labs Assignment
+{% endcomment %}
+
+<div class="lh-announcement-bar">
+  <div class="lh-container">
+    <div class="lh-announcement-inner">
+      <div class="lh-anno-left">
+        <span>{{ section.settings.left_text }}</span>
+      </div>
+      <div class="lh-anno-center">
+        <span class="lh-star-icon">✦</span>
+      </div>
+      <div class="lh-anno-right">
+        <span>{{ section.settings.right_text }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Loomhaus Announcement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "left_text",
+      "label": "Left Message",
+      "default": "Free shipping on orders over ₹500"
+    },
+    {
+      "type": "text",
+      "id": "right_text",
+      "label": "Right Message / Promo Code",
+      "default": "Use code LOOM10 for 10% off your first order"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus Announcement"
+    }
+  ]
+}
+{% endschema %}
